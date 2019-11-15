@@ -1,0 +1,111 @@
+@import "variable.scss";
+.user{
+    .el-tabs__active-bar{
+        @extend %contentbgcolor;
+    }
+    .el-tabs__item{
+        font-size: 16px;
+        &.is-active,&:hover{
+            @extend %fontcolor; 
+        }
+    }
+    .top_left{
+        width: 100px;
+        display: inline-block;
+        vertical-align: middle;
+    }
+    .top_right{
+        vertical-align: middle;
+        display: inline-block;
+        width: 90%;
+        height: 140px;
+    }
+    .top_info{
+        text-align: left;
+        height: 100%;
+        line-height: 100%;
+    }
+    .height100{
+        height: 100%;
+        line-height: 100%;
+    }
+    .bottom{
+        height: 404px;
+    }
+    .center_title{
+        @extend %contentbgcolor;
+        color: #fff;
+        height: 30px;
+        line-height: 30px;
+        width: 30%;
+        text-align: center;
+    }
+    .ZSD{
+        margin: 10px auto;
+        padding-left: 20px;
+        width: 70%;
+        height: 40px;
+        line-height: 40px;
+        background-size: 100% 100%;
+    }
+    .ZSD i{
+        @extend %fontcolor;
+        cursor: pointer;
+    }
+    .XZDY{
+        text-align: center;
+        width: 100%;
+        height: 60px;
+        line-height: 60px;
+        @extend %fontcolor;
+        font-size:22px;
+        cursor: pointer;
+    }
+    .addZSDleft{
+        padding: 10px;
+        width: 100%;
+        height: 310px;
+        overflow: auto
+    }
+    .rightZSD{
+        height: 260px;
+        overflow: auto 
+    }
+    .left_XK{
+        width: 100%;
+        color: #909399;
+        height: 50px;
+        line-height: 50px;
+        margin-top: 10px;
+        text-align: center;
+        background: #fff;
+        cursor: pointer;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+        box-sizing: border-box;
+        padding: 0 10px
+    }
+    .is-active1{
+        @extend %contentbgcolor;
+        color: #fff;
+        transition: border-color .3s,background-color .3s,color .3s;
+    }
+    .KSXX{
+        width: 19%;
+        display: inline-block;
+    }
+    .echarts_CJLB{
+        width: 100%;
+        height: 100%;
+        color: #95d3f2;
+    }
+    .chart-box {
+        margin: 0 auto;
+        height: 290px;
+        width: 900px;
+        min-width: 900px;
+        background: transparent;
+        color: #95d3f2;
+    }
+}

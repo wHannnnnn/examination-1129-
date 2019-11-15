@@ -1,0 +1,372 @@
+@import "variable.scss";
+.app_content{
+    display: flex;
+    height: calc(100vh - 160px);
+    .app_content_left{
+        width: 80%;
+        display: flex;
+        flex-direction: column;
+        .el-page-header{
+            flex-direction: row-reverse;
+            @extend %fontcolor
+        }
+        .content-center{
+            width:100%;
+            padding: 10px;
+            overflow: auto;
+            @extend %boxshadow;
+            .el-table--border th{
+                @extend %contentbgcolor;
+                color: #fff
+            }
+            .el-table--enable-row-hover .el-table__body tr:hover>td{
+                @extend %tablehovercolor;
+            }
+        }
+            .nav{
+                background-size: 100% 100%;
+                height: 100%;
+                // @extend %bgcolor;
+                .el-menu{
+                    text-align: center;
+                    padding: 10px;
+                    box-sizing: border-box;
+                    height: 100%;
+                    overflow: auto
+                }
+                .el-menu-item{
+                    font-size: 20px;
+                    height: 75px;
+                    line-height: 75px;
+                    &.is-active{
+                        @extend %contentbgcolor;
+                        color: #fff
+                    };
+                    &:focus{
+                        // background-color: #fff;
+                    }
+                }
+            };
+    .search{
+        margin-bottom: 10px;
+        .el-input__inner{
+            height: 50px;
+            line-height: 60px;
+        }
+        .el-input-group__append{
+            @extend %contentbgcolor;
+            color: #fff;
+            transition: background .3s,color .1s;
+            &:hover{
+                @extend %buttonhover;
+            }
+        }
+    }
+    }
+    .rightLogin{
+        width:19%;
+        margin-left: 10px;
+        overflow: hidden;
+        .mine{
+            padding: 0 10px;
+            @extend %fontcolor;
+            cursor: pointer;
+        }
+        .right-top{
+            box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+            border: 1px solid #EBEEF5;
+            margin-bottom: 10px;
+            @extend %boxshadow;
+            .el-dropdown{
+                // border: 1px solid #ddd;
+                font-size:18px;
+                @extend %fontcolor
+            }
+        }
+        .textitem,.right-top{
+            padding: 10px;
+            overflow: hidden;
+            text-overflow:ellipsis;
+            white-space: nowrap;
+        }
+        .textitem:hover{
+            @extend %tablehovercolor;
+            cursor: pointer;              
+        }
+        .el-card{
+            &__header{
+                @extend %fontcolor;
+            }
+            &.is-always-shadow{
+                height: calc(100% - 280px);
+                overflow: hidden
+            }
+            &__body{
+                overflow: hidden
+            }
+        }
+    }
+}
+.app_header{
+    height: 60px;
+    line-height: 60px;
+    width:100%;
+    display: flex;
+    @extend %headerbg;
+    margin-bottom: 10px;
+    .title{
+        font-size: 24px;
+        color: #fff;
+    }
+    .header-left{
+        padding-right: 10px
+    }
+    .el-dropdown{
+        @extend %fontcolor;
+    };
+    .el-button{
+        @extend %headerbg;
+        border: none;
+        // padding: 12px 10%;
+        padding: 12px;
+        color: #fff;
+        font-size: 24px;
+        font-family: 'KaiTi';
+        &:hover{
+            @extend %fontcolor;
+        }
+    }
+    .loginDiv{
+        .el-button{
+            @extend %contentbgcolor;
+            width: 100%;
+            &:hover{
+                @extend %buttonhover;
+                color: #fff
+            }
+        }
+    }
+};
+.app_bottom {
+    width: 100%;
+    height: 80px;
+    @extend %headerbg;
+    margin-top: 10px;
+}
+.allSearch{
+    width:100%;
+    // height: auto;
+    .allSearchLi {
+        background: #fff;
+        position: relative;
+        min-height: 72px;
+        padding: 10px;
+        border-bottom: 1px solid #e6e7eb;
+        .content {
+            position: relative;
+            height: auto;
+            width: 100%;
+            padding:10px;
+            box-sizing: border-box;
+            .topic-name{
+                height: 40px;
+                line-height: 40px;
+                width: 100%;
+                overflow: hidden;
+                text-overflow:ellipsis;
+                white-space: nowrap;
+                .pointName{
+                    font-size: 18px;
+                    color: #404040;
+                    font-weight: 700;
+                    margin-right: 15px;
+                }
+            }
+            .topic-title {
+                width: 100%;
+                height: 30px;
+                .title-value{
+                    max-width: 520px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    font-size: 16px;
+                    color: #585858;
+                    text-align: left;
+                    margin-right: 5px;
+                }
+            }
+            .topic-detail {
+                width: 100%;
+                min-height: 27px;
+                margin-bottom: 10px;
+                color: #585858;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                .detail-text{
+                    font-size: 14px;
+                    color: #a7a7a7;
+                    max-height: 30px;
+                    max-width: 100%;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    line-height: 24px;
+                }
+            }
+            .topic-info {
+                width: 100%;
+                height: 20px;
+                display: flex;
+                justify-content: space-between;
+                .userInfo{
+                    min-width: 160px;
+                    max-width: 400px;
+                    .userInfoName{
+                        display: inline-block;
+                        position: relative;
+                        line-height: 20px;
+                        font-size: 12px;
+                        color: #666;
+                    }
+                    .topicTime{
+                        font-size: 12px;
+                        margin-left: 5px;
+                        padding-left: 10px;
+                    }
+                }
+                .dataNum{
+                    display: inline-block;
+                    height: 20px;
+                    line-height: 20px;
+                    font-size: 12px;
+                    color: #a7a7a7;
+                    margin-top: 4px;
+                    .watchNum,.commentNum{
+                        margin-right: 20px;
+                    }
+                    img {
+                        margin-right: 5px;
+                    }
+                }
+            }
+        }
+        .commentSearch{
+            padding: 10px;
+            box-sizing: border-box;
+            .com-title{
+                height: 40px;
+                line-height: 40px;
+                width: 100%;
+                text-align: left;
+                overflow: hidden;
+                text-overflow:ellipsis;
+                white-space: nowrap;
+                .pointName{
+                    font-size: 18px;
+                    color: #404040;
+                    font-weight: 700;
+                    margin-right: 15px;
+                }
+            }
+            .el-card__body{
+                padding: 0
+            }
+            .textitem {
+                padding: 15px;
+                border-bottom: 1px dotted #E0E0E0;
+                position: relative;
+                .el-dropdown{
+                    position: absolute;
+                    right: 0;
+                    top: 0;
+                    margin-right: 0;
+                    font-size: 20px
+                }
+            }
+            .reply{
+                display: flex;
+                justify-content: space-between;
+                color: #333;
+                .topicTime{
+                    font-size: 12px;
+                    // color: #a7a7a7;
+                    // border-left: 1px solid #eee;
+                    margin-left: 5px;
+                    padding-left: 10px;
+                }
+            }
+            .replyCon{
+                margin: 5px 0
+            }
+            .replyTopic{
+                margin-top: 6px;
+            }
+            .myComTop{
+                padding: 10px;
+                background: #eee
+            }
+            .myComTopCen{
+                margin-bottom: 4px;
+                display: inline-block;
+                overflow: hidden;
+                width: 100%
+            }
+            .myComName{
+                color: #409EFF;
+                display: inline-block
+            }
+            .myComCon{
+                color: #929292
+            }
+        }
+        .fileList{
+            display: inline-block;
+            vertical-align: top;
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            cursor: pointer;
+            .listLi{
+                vertical-align: top;
+                padding: 10px;
+                background: #fff;
+                box-sizing: border-box;
+                overflow: hidden;
+                text-overflow:ellipsis;
+                white-space: nowrap;
+                .topicTime{
+                    font-size: 12px;
+                    margin-left: 5px;
+                    padding-left: 10px;
+                }
+                .file-title{
+                    height: 40px;
+                    line-height: 40px;
+                    width: 100%;
+                    text-align: left;
+                    overflow: hidden;
+                    .pointName{
+                        font-size: 18px;
+                        color: #404040;
+                        font-weight: 700;
+                        margin-right: 15px;
+                    }
+                }
+            }
+            h3{
+                margin: 10px 0;
+            }
+            .listImg,.listImg img{
+                width: 160px;
+                height: 160px;
+            }
+        }
+    }
+}
+.searchListShow{
+    display: flex;
+    height:calc(100% - 60px);
+    overflow: auto;
+}

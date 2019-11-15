@@ -1,0 +1,80 @@
+@import "variable.scss";
+.test{
+      .el-tag.el-tag--warning{
+        @extend %contentbgcolor;
+        color: #fff
+      }
+      .STnum{
+        @extend %contentbgcolor;
+        color: #fff;
+        border-radius: 50%;
+        height: 25px;
+        width: 25px;
+        text-align: center;
+        line-height: 25px;
+        font-size: 20px;
+      }
+      .SJTitle{
+          font-size: 18px;
+          padding-bottom: 4px;
+          @extend %fontcolor
+      }
+      .examType{
+        padding-bottom: 10px
+      }
+      .STRow{
+        margin: 20px 0px;
+        font-size: 20px;
+      }
+      .XZTbody{
+        color: #000;
+        margin:3px 0px;
+      }
+      
+      
+      /*更改element样式*/
+      .test .el-radio{
+        color: #fff
+      }
+      .test .el-checkbox__label{
+        color: #fff
+      }
+      .test .el-scrollbar__wrap{
+        overflow-x:hidden; 
+      }
+      .test .el-textarea{
+        width:90%;
+      }
+      .SJleft{
+        padding: 15px 35px;
+        @extend %boxshadow
+      }
+      .SJright{
+        padding: 16px;
+        @extend %boxshadow;
+      }
+      .SJright_bottom{
+        margin-top: 55px
+      }
+      .rightque {
+        width: 90%;
+        font-size: 14px;
+        color: #35e83c;
+      }
+      img{
+        vertical-align: middle;
+        width: 100px;
+        height: 100px;
+        margin-left: 6px;
+      
+      }
+      .viewer {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+          border: 1px solid red;
+      }
+      .aImg, .tImg {
+        display: inline-block;
+      }
+}

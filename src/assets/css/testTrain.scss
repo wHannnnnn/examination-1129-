@@ -1,0 +1,118 @@
+@import "variable.scss";
+.testTrain{
+    .el-menu-item{
+        font-size: 20px;
+        padding: 0 70px;
+    }
+    .el-menu--horizontal>.el-menu-item.is-active{
+        @include inputcolor('2px')
+    }
+    .content-center{
+        padding: 10px;
+        margin-top: 10px;
+        overflow: hidden;
+        @extend %boxshadow;
+        .testTrain_main_queType,.testTrain_bottom_title{
+            font-size: 20px;
+            padding: 10px 0
+        }
+        .XZTOption{
+            margin: 10px;
+            @include inputcolor('1px');
+            padding: 10px
+        }
+        .testTrain_main_title{
+            padding: 10px
+        }
+        .nowIsQuestionAnswerRed{
+            color: red;
+            margin: 15px;
+        }
+        .nowIsQuestionAnswerGreen{
+            color: green;
+            margin: 15px;
+        }
+        img{
+            vertical-align: middle;
+            width: 100px;
+            height: 100px;
+            margin-left: 6px;
+        }
+        .aImg, .tImg {
+            display: inline-block;
+        }
+        .video {
+            margin-right: 10px;
+            display: inline-block;
+        }
+        .el-tag.el-tag--warning{
+            @extend %contentbgcolor;
+            color: #fff
+        }
+        // 模拟考试
+        .mock_index{
+            height: calc(100vh - 220px);
+        }
+        .mockexam_left{
+            width: 20%;
+            display: inline-block;
+            margin-right: 10px;
+            background: #fff;
+            height: 100%;
+            vertical-align: top;
+            overflow: auto;
+          }
+          .mockexam_right{
+            width:77%; 
+            box-sizing: border-box;
+            padding: 10px;
+            display: inline-block;
+            background: #fff;
+            height: 100%;
+            vertical-align: top;
+            overflow: auto;
+            position: relative
+          }
+          .mockexam_right_title{
+            text-align: left;
+            font-size: 26px;
+          }
+          .mockexam_right_ZSD{
+            text-align: left;
+          }
+          .mockexam_right_button{
+            margin: 0 auto;
+            width: 220px;
+            font-size: 21px;
+            cursor: pointer;
+            position: absolute;
+            left: 290px;
+            bottom: 0;
+          }
+          .mockexam_right_ZSDname{
+            text-align: center;
+            width: 93%;
+            height:40px;
+            line-height: 40px;
+            color: #adab4e;
+            @extend %contentbgcolor;
+            color: #fff;
+            margin-top: 20px;
+            display: inline-block;
+          }
+          .mockexam_right_ZSDnum{
+            text-align: center;
+            width: 100px;
+            height:40px;
+            line-height: 40px;
+            @extend %contentbgcolor;
+            color: #fff;
+            margin:5px 0;
+            display: inline-block;
+            border-right: 1px solid #62bbb4;
+          }
+          .el-input-number{
+              width: 100px
+          }
+    }
+}

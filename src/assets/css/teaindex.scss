@@ -1,0 +1,172 @@
+@import "variable.scss";
+.teaindex{
+  // 按钮
+  #workarea{position:absolute;width:100%;height:100%;background-color:#1e1a3e;font-family:Raleway}
+
+  .spot{position:absolute;width:100%;height:100%;top:0;left:0}
+  .svg-wrapper{margin-top:-8px;position:relative;width:110px;height:40px;display:inline-block;border-radius:3px;margin-left:5px;margin-right:5px}
+  #shape{stroke-width:6px;fill:transparent;stroke:#009FFD;stroke-dasharray:85 300;stroke-dashoffset:-165;transition:1s all ease}
+  /*stroke-dashoffset:-165;下划线位置*/
+  #text{margin-top:-35px;text-align:center}
+  #text a{color:#606266;text-decoration:none;font-weight:100;font-size:1.1em}
+  .svg-wrapper:hover #shape{stroke-dasharray:50 0;stroke-width:3px;stroke-dashoffset:0;stroke:#06D6A0}
+
+  .el-pager li.active{
+    @extend %fontcolor
+  }
+  .el-menu{
+      text-align: center;
+      padding: 10px;
+  }
+  .el-menu-item,.el-submenu__title{
+    font-size: 16px
+  }
+  .el-menu--horizontal>.el-submenu .el-submenu__title,.el-menu--horizontal>.el-menu-item{
+    height: 50px;
+    line-height: 50px 
+  }
+  .el-menu--horizontal>.el-menu-item.is-active{
+    @extend %contentbgcolor;
+    color: #fff;
+    border-bottom: none
+  }
+  .el-menu--horizontal>.el-submenu.is-active .el-submenu__title{
+     @include inputcolor('2px')
+  }
+  .el-transfer__buttons{
+    padding: 0 20px
+  }
+  .el-transfer__button{
+    color: #fff
+  }
+  .tea_right{
+    overflow: auto;
+    padding: 10px;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    margin-top: 10px;
+    @extend %boxshadow;
+  }
+  .breadcrumb{
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+  }
+  .teatable{
+    margin-top: 10px;
+    .grid-content{
+      @extend %contentbgcolor;
+      &:hover{
+        @extend %buttonhover;
+      }
+    }
+    // 图片预览
+    img{
+      width: 200px;
+      height: 200px;
+      vertical-align: middle;
+      margin-left: 6px;
+    }
+    p {
+      padding-top: 4px
+    }
+    .viewer {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        border: 1px solid red;
+    }
+    .aImg, .tImg {
+      display: inline-block;
+    }
+    // 表格样式
+    .el-table--border th{
+        @extend %contentbgcolor;
+        color: #fff
+    }
+    .el-table--enable-row-hover .el-table__body tr:hover>td{
+        @extend %tablehovercolor;
+    }
+  }
+  // 创建试题样式
+  .el-radio-button__orig-radio:checked+.el-radio-button__inner{
+    @extend %contentbgcolor;
+    @include inputcolor('1px');
+    box-shadow: none
+  }
+  .el-input-group__append button.el-button{
+    @extend %contentbgcolor;
+  }
+  .el-input-group__append{
+    border: none;
+    color: #fff
+  }
+
+  // 试卷导入
+    .xzmb {
+    word-wrap: break-word;
+    word-break: normal;
+    @extend %contentbgcolor;
+    color: #fff;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 4px;
+      .neirong {
+        padding: 20px;
+      }
+      .neirong p {
+        margin-bottom: 10px;
+      }
+      .xiazai {
+        margin-top: 10px;
+      }
+      .xiazai .el-button {
+        width: 80%
+      }
+      .xiazai .el-upload {
+        width: 100%;
+        text-align: left
+      }
+      .chart-box {
+        height: 500px;
+      }
+      #menu {
+        position: fixed;
+        left: 0;
+        top: 0;
+        /*display: none*/
+      }
+      p {
+        padding-top: 4px
+      }
+  }
+  
+}
+.cascader-menu-wrapper{
+    .el-cascader-menu{
+      display: inline-block;
+      vertical-align: top;
+      height: 204px;
+      overflow: auto;
+      border-right: solid 1px #e4e7ed;
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 6px 0;
+      min-width: 160px;
+  }
+  .el-cascader-menu__item{
+      font-size: 14px;
+      padding: 8px 20px;
+      position: relative;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #606266;
+      height: 34px;
+      line-height: 1.5;
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+      cursor: pointer;
+      outline: 0;
+  }
+}

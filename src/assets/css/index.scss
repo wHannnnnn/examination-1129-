@@ -1,0 +1,112 @@
+@import "variable.scss";
+@import "base.scss";
+html{
+    width: 100%;
+    height: 100%;
+    @extend %bgcolor;
+    @extend %fontcolor;
+}
+// 表格按钮
+.change,.el-dialog__wrapper{
+    width: 1024px;
+    margin: 0 auto;
+    min-width: 1024px;
+    // 分页
+    .el-pagination{
+        text-align: center;
+        &.is-background .el-pager li:not(.disabled).active{
+            @extend %contentbgcolor;
+        }
+       &.is-background .el-pager li:not(.disabled):hover{
+            @extend %fontcolor;
+        }
+    }
+    // 按钮
+    .el-button--primary{
+        @extend %contentbgcolor;
+        // color: #fff;
+        border: none;
+        &:hover{
+            @extend %buttonhover;
+        }
+    }
+    .el-button{
+        transition: background .3s,color .1s;
+    }
+    .el-input__inner{
+        @extend %fontcolor;
+        &::-webkit-input-placeholder {
+            @extend %fontcolor;
+        }
+        &:focus{
+            @include inputcolor('1px');
+        }
+    }
+    .el-radio,.el-checkbox{
+        margin-right: 0;
+    }
+    .el-textarea__inner:focus{
+         @include inputcolor('1px');
+    }
+    .el-select .el-input.is-focus .el-input__inner{
+        @include inputcolor('1px');
+    }
+    .el-cascader .el-input .el-input__inner:focus, .el-cascader .el-input.is-focus .el-input__inner{
+        @include inputcolor('1px');
+    }
+    .el-progress-bar__inner{
+        @extend %contentbgcolor;
+    }
+    .el-dropdown-link {
+        cursor: pointer;
+    }
+}
+.el-tooltip__popper.is-dark{
+    @extend %fontcolor;
+}
+.el-dialog__wrapper{
+    width: 100%
+}
+.asdasd{
+    display: none;
+}
+.infinite-status-prompt{
+    padding: 10px;
+    background: #fff;
+}
+.el-page-header{
+    background: #fff;
+}
+.mine{
+    padding: 0 10px;
+    @extend %fontcolor;
+    cursor: pointer;
+}
+// 系统首页
+@import "home.scss";
+// 训练页面
+@import "testTrain.scss";
+// 模拟考试 水平考试
+@import "mockExam.scss";
+// 资源中心
+@import "learning.scss";
+//资源详情
+@import "classroom.scss";
+// 考试准备 考试登录
+@import "test.scss";
+//在线交流平台
+@import "online.scss";
+//个人中心
+@import "user.scss";
+// 教师端首页
+@import "teaindex.scss";
+
+// .tableChange.nav{
+//     // background:transparent ;
+//     /* background: url('./../../assets/img/main_left.png') center center no-repeat; */
+//     background-size: 100% 100%;
+//     margin:40px 40px 0px 40px;
+//     padding: 20px 20px;
+//     height: 720px;
+//     width: 180px;
+//   }

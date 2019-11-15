@@ -1,0 +1,58 @@
+@import "variable.scss";
+.learning{
+    .search{
+        .el-input__inner{
+            height: 50px;
+            line-height: 60px;
+        }
+        .el-input-group__append{
+            @extend %contentbgcolor;
+            color: #fff;
+            transition: background .3s,color .1s;
+            &:hover{
+                @extend %buttonhover;
+            }
+        }
+    }
+    .detail{
+        margin-top:10px; 
+        @extend %boxshadow;
+        form{
+            padding: 10px;
+        }
+    }
+    .learning_ZL{
+        @extend %boxshadow;
+    }
+    .rightList{
+        margin-top: 20px;
+        display: inline-block;
+        vertical-align: top;
+        width: 100%;
+        li{
+            text-align: center;
+            display: inline-block;
+            vertical-align: top;
+            padding: 10px;
+            margin: 0 10px 20px 10px;
+            background: #fff;
+            width: 180px;
+            box-sizing: border-box;
+            overflow: hidden;
+            text-overflow:ellipsis;
+            white-space: nowrap;
+            border: 1px solid #eee;
+            cursor: pointer;
+            .biao{
+                color: #ef9435;
+            }
+        }
+        h3{
+            margin: 10px 0;
+        }
+        .listImg,.listImg img{
+            width: 160px;
+            height: 160px;
+        }
+    }
+}

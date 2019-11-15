@@ -1,0 +1,131 @@
+$color: #5dd5c8;
+$color1: #00B38A;
+$color2: #C7B45C;
+
+$bgcColor: #f6f6f8;
+$bgcColor1: green;
+$bgcColor2: blue;
+
+$contentbgcolor:#5dd5c8;
+$contentbgcolor1:#00B38A;
+$contentbgcolor2:#5dd5c8;
+
+$headerbg: #333;
+$headerbg1: #12751c;
+$headerbg2: #333;
+
+$buttonhoverColor: #6adbcf;
+$buttonhoverColor1: #22d6ad;
+$buttonhoverColor2: #6adbcf;
+
+$bodyhovercolor: rgba(112, 226, 213, 0.40);
+$bodyhovercolor1: rgba(151, 227, 171, 0.42);
+$bodyhovercolor2: rgba(53, 198, 182, 0.76);
+
+// 字体
+%fontcolor{
+    color: $color;
+
+	[data-theme='theme1'] & {
+        color: $color1;
+    };
+    
+	[data-theme='theme2'] & {
+        color: $color2;
+	}
+};
+// 背景
+%bgcolor{
+   background-color: $bgcColor;
+
+   [data-theme='theme1'] & {
+       background-color: $bgcColor1;
+   };
+   
+   [data-theme='theme2'] & {
+       background-color: $bgcColor2;
+   }
+};
+
+// 头部背景
+%headerbg{
+    background-color: $headerbg;
+    
+    [data-theme='theme1'] & {
+        background-color: $headerbg1;
+    };
+    
+    [data-theme='theme2'] & {
+        background-color: $headerbg2;
+    }
+}
+// 表格
+%tablehovercolor{
+    background-color: $bodyhovercolor;
+    [data-theme='theme1'] & {
+        background-color: $bodyhovercolor1;
+    };
+    
+    [data-theme='theme2'] & {
+        background-color: $bodyhovercolor2;
+    } 
+};
+// 内容背景
+%contentbgcolor{
+    background-color: $contentbgcolor;
+    [data-theme='theme1'] & {
+        background-color: $contentbgcolor1;
+    };
+    
+    [data-theme='theme2'] & {
+        background-color: $contentbgcolor2;
+    } 
+}
+// 按钮选中
+%buttonhover{
+    background-color: $buttonhoverColor;
+    
+    [data-theme='theme1'] & {
+        background-color: $buttonhoverColor1;
+    };
+    
+    [data-theme='theme2'] & {
+        background-color: $buttonhoverColor2;
+    } 
+}
+// div阴影
+%boxshadow{
+    background: #fff;
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
+}
+// 边框
+@mixin inputcolor($border){
+    @if($border == '1px'){
+        border: 1px solid $contentbgcolor;
+    }
+    @if($border == '2px'){
+        border-bottom: 2px solid $contentbgcolor;
+    }
+    [data-theme='theme1'] & {
+        @if($border == '1px'){
+            border: 1px solid $contentbgcolor1;
+        }
+        @if($border == '2px'){
+            border-bottom: 2px solid $contentbgcolor1;
+        }
+    };
+    
+    [data-theme='theme2'] & {
+        @if($border == '1px'){
+            border: 1px solid $contentbgcolor2;
+        }
+        @if($border == '2px'){
+            border-bottom: 2px solid $contentbgcolor2;
+        }
+    } 
+}
+// %buttonhover-common {
+// 	// border: 1px solid #ccc;
+//     // padding: 10px;
+//     @include buttonhover();
+// }
