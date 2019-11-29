@@ -35,7 +35,7 @@
           </el-card>
         </el-col>
          <el-col :span="16">
-          <el-card class="box-card change">
+          <el-card class="box-card">
             <div slot="header" class="clearfix">
               <span>{{questionType}}</span>
             </div>
@@ -47,7 +47,7 @@
                   <div class="queTG">{{item.questionBody}}</div>
 
                   <div v-if="questionType == '单选题'">
-                    <div class="XZTOption" v-for="item1 in item.allData[0].questionOption.split(';')">
+                    <div class="XZTOption" v-for="item1 in item.allData[0].questionOption">
                       <div :class="DXTchoiceAnswer(item1,item.allData[0].questionAnswer)?'redClass':''">{{item1}}</div>
                     </div>
                     <el-tag type="warning" >答对人次:{{item.trueSTnum}}</el-tag>
@@ -55,7 +55,7 @@
                   </div>
 
                   <div v-if="questionType == '判断题'">
-                    <div class="XZTOption" v-for="item1 in item.allData[0].questionOption.split(';')">
+                    <div class="XZTOption" v-for="item1 in item.allData[0].questionOption">
                       <div :class="PDTchoiceAnswer(item1,item.allData[0].questionAnswer)?'redClass':''">{{item1}}</div>
                     </div>
                     <el-tag type="warning" >答对人次:{{item.trueSTnum}}</el-tag>
@@ -63,7 +63,7 @@
                   </div>
 
                   <div v-if="questionType == '多选题'">
-                    <div class="XZTOption" v-for="item1 in item.allData[0].questionOption.split(';')">
+                    <div class="XZTOption" v-for="item1 in item.allData[0].questionOption">
                       <div :class="DUOXTchoiceAnswer(item1,item.allData[0].questionAnswer)?'redClass':''">{{item1}}</div>
                     </div>
                     <el-tag type="warning" >答对人次:{{item.trueSTnum}}</el-tag>
@@ -74,7 +74,6 @@
                     答案：{{item.questionAnswer}}<br/>
                     <el-table
                       :data="item.allData"
-                      max-height="450"
                       size="mini"
                       border
                       style="width: 100%">
@@ -105,7 +104,6 @@
                     关键字：{{item.keys?item.keys.join(','):''}}<br/>
                     <el-table
                       :data="item.allData"
-                      max-height="450"
                       size="mini"
                       border
                       style="width: 100%">
@@ -134,7 +132,6 @@
                     答案：{{item.questionAnswer}}<br/>
                     <el-table
                       :data="item.allData"
-                      max-height="450"
                       size="mini"
                       border
                       style="width: 100%">
@@ -170,7 +167,7 @@
                             <div class="queTG">第{{index1+1}}题 ({{item1.singleScore}}分)、{{item1.questionBody}}</div>
 
                             <div v-if="item1.questionType == 'SINGLE_CHOICE'">
-                              <div class="XZTOption" v-for="item2 in item1.questionOption.split(';')">
+                              <div class="XZTOption" v-for="item2 in item1.questionOption">
                                 <div :class="DXTchoiceAnswer(item2,item1.questionAnswer)?'redClass':''">{{item2}}</div>
                               </div>
                               <div>
@@ -178,7 +175,7 @@
                               </div>
                             </div>
                             <div v-if="item1.questionType == 'MULTIPLE_CHOICE'">
-                              <div class="XZTOption" v-for="item2 in item1.questionOption.split(';')">
+                              <div class="XZTOption" v-for="item2 in item1.questionOption">
                                 <div :class="DUOXTchoiceAnswer(item2,item1.questionAnswer)?'redClass':''">{{item2}}</div>
                               </div>
                               <div>
@@ -199,7 +196,7 @@
                               </div>
                             </div>
                             <div v-if="item1.questionType == 'CHECKING'">
-                               <div class="XZTOption" v-for="item2 in item1.questionOption.split(';')">
+                               <div class="XZTOption" v-for="item2 in item1.questionOption">
                                 <div :class="PDTchoiceAnswer(item2,item1.questionAnswer)?'redClass':''">{{item2}}</div>
                                 </div>
                                 <div>

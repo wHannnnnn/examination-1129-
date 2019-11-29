@@ -3,7 +3,7 @@
         <el-row>
                 <el-col :span="5">
                     <div class="grid-content bg-purple">
-                        <span class="title" @click="index">考核筹划分系统</span>
+                        <span class="title" @click="index" style="cursor:pointer;padding: 0 10px;">综合训练考核系统</span>
                     </div>
                 </el-col>
                 <el-col :span="4" style="text-align: center;">
@@ -19,17 +19,17 @@
                         <el-button @click="clickXXZL">学习资源中心</el-button>
                 </el-col> 
                 <el-col :span="3" style="text-align: right">
-                    <el-dropdown  v-if="this.$store.state.aId&&this.$store.state.aId!=null" style="position: relative;top:8px">
+                    <el-dropdown  v-if="this.studentLoginUser&&this.studentLoginUser!=null" style="position: relative;top:8px">
                         <el-tooltip class="item" effect="dark" :content="studentLoginUser" placement="left-end">
                             <span class="el-dropdown-link">
                                 <!-- {{this.$store.state.loginUser.nickname}} -->
-                                <el-avatar :size="30" :src="circleUrl"></el-avatar>
+                                <el-avatar :size="30" :src="squareUrl"></el-avatar>
                             </span>
                         </el-tooltip>
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item @click.native="mine">个人中心</el-dropdown-item>
                             <el-dropdown-item @click.native="output1">退出登录</el-dropdown-item>
-                            <el-dropdown-item v-if="this.$store.state.role !== 'STUDENT'">进入后台</el-dropdown-item>
+                            <el-dropdown-item v-if="this.$store.state.role !== 'STUDENT'" @click.native="tealogin">进入后台</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                     <el-dropdown @command='change' trigger="click">
@@ -41,12 +41,11 @@
                             <el-dropdown-menu slot="dropdown">
                                 <el-dropdown-item>默认</el-dropdown-item>
                                 <el-dropdown-item command="theme1">背景一</el-dropdown-item>
-                                <el-dropdown-item command="theme2">背景二</el-dropdown-item>
                             </el-dropdown-menu>
                     </el-dropdown>
                 </el-col>
         </el-row>
-         <el-dialog :visible.sync="loginShow" width="50%" :before-close="handleClose">
+         <el-dialog :visible.sync="loginShow" width="400px" :before-close="handleClose">
             <div class="loginDiv">
                 <div style="width: 100%;text-align: center;font-size: 26px">考试中心登录页</div>
                 <div style="width: 70%;margin: 10px auto">
@@ -89,13 +88,31 @@ export default {
   },
     computed: {
         ...mapState(['loginUser']),
+        ...mapState(['aId']),
         studentLoginUser(){
             return this.loginUser==null? null: this.loginUser.username
+        },
+        asex(){
+            return this.loginUser==null? null: this.loginUser.sex
+        },
+        squareUrl(){
+            if(this.asex == true){
+                return require('../../assets/img/boy.png')
+                }else {
+                return require('../../assets/img/girl.png')
+            }
         }
     },
   mounted() {
   },
   methods: {
+    tealogin(){
+        if (this.$store.state.role =='QUESTIONS_BANK_TEACHER') {
+            this.$router.push({path: '/knowManagement'});
+        } else {
+            this.$router.push({path: '/teaindex'});
+        }
+    },
     index(){
         this.$router.push({path: '/'})
     },
@@ -105,10 +122,10 @@ export default {
                 cancelButtonText: '取消',
                 type: 'success'
             }).then(() => {
-                sessionStorage.removeItem('access_token')
-                sessionStorage.removeItem('loginUser')
-                sessionStorage.removeItem('role')
-                sessionStorage.removeItem('aId')
+                localStorage.removeItem('access_token')
+                localStorage.removeItem('loginUser')
+                localStorage.removeItem('role')
+                localStorage.removeItem('aId')
                 this.$store.state.access_token = null
                 this.$store.state.loginUser = null
                 this.$store.state.role = null
@@ -168,14 +185,14 @@ export default {
             // this.$store.state.isTset = true
             // this.$store.state.ticket = this.login.ZKZH
             // this.$store.state.realName = this.login.KSXM
-            sessionStorage.setItem('isTset', true)
-            sessionStorage.setItem('ticket', this.login.ZKZH)
-            sessionStorage.setItem('realName', this.login.KSXM)
+            localStorage.setItem('isTset', true)
+            localStorage.setItem('ticket', this.login.ZKZH)
+            localStorage.setItem('realName', this.login.KSXM)
             // this.$store.state.KSdata = res
-            sessionStorage.setItem('KSdata', JSON.stringify(res))
+            localStorage.setItem('KSdata', JSON.stringify(res))
 
             this.$axiosStuRes('get',this.$axiosURL.b_dictionarys,'').then((res)=>{
-            sessionStorage.setItem('dictionarys', JSON.stringify(res))
+            localStorage.setItem('dictionarys', JSON.stringify(res))
             this.$store.state.dictionarys = res;
             })
             // this.$router.push({path:'/test_first'})

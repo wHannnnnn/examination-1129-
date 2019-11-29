@@ -6,8 +6,8 @@
             <div class="listImg">
                 <img :src="imgSrc(item)" alt="">
             </div>
-            <h3 class="listTiele">{{item.fileTitle}}</h3>
-            <p>{{item.summary}}</p>
+            <h3 style="height: 24px" class="listTiele">{{item.fileTitle}}</h3>
+            <p style="height: 20px">{{item.summary}}</p>
             <p>
                 浏览量:<a class="biao">{{item.browsingNum?item.browsingNum:0}}</a>
                 收藏次数:<a class="biao">{{item.collectionNum?item.collectionNum:0}}</a>
@@ -41,7 +41,7 @@ export default {
             }
         },
         clickZL:function(item){
-            sessionStorage.setItem('LSKJ',JSON.stringify(item))
+            localStorage.setItem('LSKJ',JSON.stringify(item))
             const route = this.$router.resolve({name:'classRoom'})
             window.open(route.href,'_blank',)
         },

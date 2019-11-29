@@ -1,50 +1,36 @@
-$color: #5dd5c8;
-$color1: #00B38A;
-$color2: #C7B45C;
+$color: #86b1d4;
+$color1: #27417c;
 
 $bgcColor: #f6f6f8;
-$bgcColor1: green;
-$bgcColor2: blue;
+$bgcColor1: #27417c;
 
-$contentbgcolor:#5dd5c8;
-$contentbgcolor1:#00B38A;
-$contentbgcolor2:#5dd5c8;
+$contentbgcolor:#86b1d4;
+$contentbgcolor1:#27417c;
 
-$headerbg: #333;
-$headerbg1: #12751c;
-$headerbg2: #333;
+$headerbg: #545455;
+$headerbg1: #27417c;
 
-$buttonhoverColor: #6adbcf;
-$buttonhoverColor1: #22d6ad;
-$buttonhoverColor2: #6adbcf;
+$buttonhoverColor: #86b1d4;
+$buttonhoverColor1: #27417c;
 
-$bodyhovercolor: rgba(112, 226, 213, 0.40);
-$bodyhovercolor1: rgba(151, 227, 171, 0.42);
-$bodyhovercolor2: rgba(53, 198, 182, 0.76);
+$bodyhovercolor: rgba(164, 190, 215, 0.71);
+$bodyhovercolor1: rgba(58, 83, 134, 0.44);
 
 // 字体
 %fontcolor{
     color: $color;
-
 	[data-theme='theme1'] & {
         color: $color1;
     };
-    
-	[data-theme='theme2'] & {
-        color: $color2;
-	}
 };
 // 背景
 %bgcolor{
-   background-color: $bgcColor;
-
+    background: url('../img/bg1.jpg') center center no-repeat;
+    background-size: 100% 100%;
    [data-theme='theme1'] & {
-       background-color: $bgcColor1;
+          background: url('../img/bg2.jpg') center center no-repeat;
+            background-size: 100% 100%;
    };
-   
-   [data-theme='theme2'] & {
-       background-color: $bgcColor2;
-   }
 };
 
 // 头部背景
@@ -55,9 +41,6 @@ $bodyhovercolor2: rgba(53, 198, 182, 0.76);
         background-color: $headerbg1;
     };
     
-    [data-theme='theme2'] & {
-        background-color: $headerbg2;
-    }
 }
 // 表格
 %tablehovercolor{
@@ -65,10 +48,6 @@ $bodyhovercolor2: rgba(53, 198, 182, 0.76);
     [data-theme='theme1'] & {
         background-color: $bodyhovercolor1;
     };
-    
-    [data-theme='theme2'] & {
-        background-color: $bodyhovercolor2;
-    } 
 };
 // 内容背景
 %contentbgcolor{
@@ -77,9 +56,6 @@ $bodyhovercolor2: rgba(53, 198, 182, 0.76);
         background-color: $contentbgcolor1;
     };
     
-    [data-theme='theme2'] & {
-        background-color: $contentbgcolor2;
-    } 
 }
 // 按钮选中
 %buttonhover{
@@ -89,9 +65,6 @@ $bodyhovercolor2: rgba(53, 198, 182, 0.76);
         background-color: $buttonhoverColor1;
     };
     
-    [data-theme='theme2'] & {
-        background-color: $buttonhoverColor2;
-    } 
 }
 // div阴影
 %boxshadow{
@@ -114,15 +87,6 @@ $bodyhovercolor2: rgba(53, 198, 182, 0.76);
             border-bottom: 2px solid $contentbgcolor1;
         }
     };
-    
-    [data-theme='theme2'] & {
-        @if($border == '1px'){
-            border: 1px solid $contentbgcolor2;
-        }
-        @if($border == '2px'){
-            border-bottom: 2px solid $contentbgcolor2;
-        }
-    } 
 }
 // %buttonhover-common {
 // 	// border: 1px solid #ccc;

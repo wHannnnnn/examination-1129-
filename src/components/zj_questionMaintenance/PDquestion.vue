@@ -1,5 +1,5 @@
 <template>
-	<el-form :model="judgeForm" ref="judgeForm" :rules="rules" class="SJleft">
+	<el-form :model="judgeForm" ref="judgeForm" :rules="rules" class="STleft">
 			<el-row>
 				<el-col :span="20" :offset="1">
 					<el-form-item label="题干：">
@@ -7,14 +7,25 @@
 
             <div v-if="imgshow">
               <viewer :images="judgeForm.eqBodyImageNameList1" class="tImg" v-if="judgeForm.eqBodyImageNameList1">
-                <div>
+                <div v-for="(src,index) in judgeForm.eqBodyImageNameList1" :key="src">
                   <img
-                    v-for="(src,index) in judgeForm.eqBodyImageNameList1"
                     :src="getImgUrl(src)"
                     :key="index"
                   >
+                  <div class="imgList">
+                    <el-upload
+                      :action="uploadUrl"
+                      :on-success="uploadSuccess"
+                      :show-file-list="false"
+                      :beforeUpload="beforeAvatarUpload1"
+                      accept=".jpg,.jpeg,.png,.bmp,.gif,.svg"
+                      >
+                      <i class="el-icon-edit" @click='editImg(judgeForm.id,index,true)'></i>
+                    </el-upload>
+                    <div><i class="el-icon-delete" :data-id="judgeForm.id" @click="delImg(judgeForm.id,index)"></i></div>
+                  </div>
                 </div>
-                <div class="edit" v-for="(src,index) in judgeForm.eqBodyImageNameList1" :key="index">
+                <!-- <div class="edit" v-for="(src,index) in judgeForm.eqBodyImageNameList1" :key="index">
                   <el-upload
                     :action="uploadUrl"
                     :on-success="uploadSuccess"
@@ -25,12 +36,11 @@
                     <i class="el-icon-edit" @click='editImg(judgeForm.id,index,true)'></i>
                   </el-upload>
                   <div><i class="el-icon-delete" :data-id="judgeForm.id" @click="delImg(judgeForm.id,index)"></i></div>
-                </div>
+                </div> -->
               </viewer>
             </div>
-            <div @click="addImg(judgeForm.id)">
+            <div @click="addImg(judgeForm.id)" v-if="newList.questionBody != ''">
               <el-upload
-                class="add"
                 :action="uploadUrl"
                 list-type="picture-card"
                 :on-success="uploadSuccess"
@@ -39,7 +49,21 @@
                 <i class="el-icon-plus"></i>
               </el-upload>
             </div>
-            
+            <div class="createImg" v-if="newList.questionBody == ''">
+                <el-upload
+                  action="#"
+                  name="bodyFile"
+                  list-type="picture-card"
+                  :auto-upload="false"
+                  :on-change="createChange"
+                  :on-remove="handleRemove"
+                  :file-list="fileList"
+                  ref="upload"
+                  >
+                    <i slot="default" class="el-icon-plus"></i>
+                    <!-- <el-button type="success" @click="uploadFile" style="display: none"></el-button> -->
+                </el-upload>
+            </div>
           </el-form-item>
 				</el-col>
 		 	</el-row>
@@ -83,11 +107,14 @@
   export default {
     props: [ 'judgeForm', 'fileListArr', 'propressNum'],
     created () {
-
+      this.newList = JSON.parse(JSON.stringify(this.judgeForm))
+      this.$bus.$on('stUploadFile',(id)=>{
+            this.optionSubmit(id)
+      })
     },
     mounted () {
       var that = this
-      $('.SJleft').on("click",".tImg img",function(){
+      $('.STleft').on("click",".tImg img",function(){
           if($(this).attr("name") == '1'){
             return
           }
@@ -100,7 +127,7 @@
           $(this).attr("name", '1')
           this.imgshow = true
       })
-      $('.SJleft').on("click",".aImg img",function(){
+      $('.STleft').on("click",".aImg img",function(){
           if($(this).attr("name") == '1'){
             return
           }
@@ -130,10 +157,32 @@
         ashow: false,
         imgshow: true,
         src: '',
-        addBody: false
+        addBody: false,
+        newList: null,
+        bodyFileList: []
       }
     },
     methods: {
+        optionSubmit(id){
+          let formData = new FormData() // 创建form对象
+          if(this.bodyFileList != []){
+            this.bodyFileList.forEach(ele => {
+              formData.append('bodyFile', ele.raw, ele.name) // 通过append向form对象添加数据
+            });
+          }
+          if(this.bodyFileList.length > 0){
+            this.$uploadImg('post', this.$axiosURL.fm_fileManipulate + '/add/' + id + '/images', formData).then((res) => {
+              console.log(res)
+            })
+          }
+        },
+        handleRemove(file,fileList) {
+          this.bodyFileList = fileList
+        },
+        createChange(file,fileList) {
+          this.bodyFileList = fileList
+          console.log(this.bodyFileList)
+        },
         handleExceed (files, fileList) {
 //        this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`)
         this.$message({
@@ -201,10 +250,9 @@
           this.imgshow = true
         })
       }
-    }
-
+    },
+    beforeDestroy() {
+      this.$bus.$off('stUploadFile')
+    },
 }
 </script>
-<style scoped>
-
-</style>

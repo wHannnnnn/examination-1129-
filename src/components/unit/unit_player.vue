@@ -16,8 +16,6 @@
           :cors-anonym="true"
           audio-src="FJdata.requestFullPathAndFileName"
         ></av-bars>
-  <!--       <audio :src="FJdata.requestFullPathAndFileName" controls="controls" ></audio> -->
-
       </div>
       <div v-if="FJdata.questionAccessoryType == 'VIDEO'" class='HW100'>
         <div class="player">
@@ -33,15 +31,31 @@
         <span style='display: inline-block;height:100%;vertical-align: middle'></span>
       </div>
       <div v-show="FJdata.fileType == 0" class='HW100'>
-        <div style='height: 600px;overflow-x: hidden;overflow-y: auto;'>
+        <div style='height: 580px;overflow-x: hidden;overflow-y: auto;'>
           <pdf 
           v-for='item in numPages'
           :key='item'
           :page='item'
-          :src="FJdata.onlinePath"
+          :src="myUrl(FJdata.onlinePath)"
           ></pdf>
         </div>
       </div>
+
+      <div v-show="FJdata.fileType == 2" class='HW100'>
+        <div>
+          {{FJdata.name}}
+        </div>
+        <av-bars
+          caps-color="#FFF"
+          :bar-color="['#f00', '#ff0', '#0f0']"
+          canv-fill-color="#000"
+          :caps-height="2"
+          :symmetric="true"
+          :cors-anonym="true"
+          :audio-src="this.$BASEURL + this.FJdata.onlinePath"
+        ></av-bars>
+      </div>
+
       <div v-if="FJdata.fileType == 3" class='HW100'>
         <div class="player">
            <video-player  class="video-player vjs-custom-skin"
@@ -55,7 +69,7 @@
 </template>
 
 <script>
-  import pdf from 'vue-pdf'
+import pdf from 'vue-pdf'
 export default {
   name: 'unit_player',
   components: {
@@ -113,7 +127,9 @@ export default {
     }
   },
   methods: {
-    
+    myUrl(url){
+      return this.$BASEURL + url
+    }
   },
   computed: {
     player() {
@@ -121,9 +137,8 @@ export default {
     }
   },
   mounted:function(){
-    console.log('onlinePath',this.FJdata.onlinePath)
     var loadingTask = pdf.createLoadingTask({
-      url:this.FJdata.onlinePath,
+      url:this.$BASEURL + this.FJdata.onlinePath,
     });
     loadingTask.then(pdf => {
       this.numPages = pdf.numPages;
@@ -159,4 +174,7 @@ export default {
   width:100%;
   text-align: center;
 }
+  .HW100 span {
+    width: 100%
+  }
 </style>

@@ -1,29 +1,28 @@
 <template>
-	<el-form :model="multipleChoiceForm" ref="multipleChoiceForm" class="SJleft">
+	<el-form :model="multipleChoiceForm" ref="multipleChoiceForm" class="STleft">
 			<el-row>
 				<el-col :span="20" :offset="1">
 					<el-form-item label="题干部分：">
 						<el-input type="textarea" v-model="multipleChoiceForm.questionBody"></el-input>
             <div v-if="imgshow">
               <viewer :images="multipleChoiceForm.eqBodyImageNameList1" class="tImg" v-if="multipleChoiceForm.eqBodyImageNameList1">
-                <div>
+                <div v-for="(src,index) in multipleChoiceForm.eqBodyImageNameList1" :key="src">
                   <img
-                    v-for="(src,index) in multipleChoiceForm.eqBodyImageNameList1"
                     :src="getImgUrl(src)"
                     :key="index"
                   >
-                </div>
-                <div class="edit" v-for="(src,index) in multipleChoiceForm.eqBodyImageNameList1" :key="index">
-                  <el-upload
-                    :action="uploadUrl"
-                    :on-success="uploadSuccess"
-                    :show-file-list="false"
-                    :beforeUpload="beforeAvatarUpload1"
-                    accept=".jpg,.jpeg,.png,.bmp,.gif,.svg"
-                    >
-                    <i class="el-icon-edit" @click='editImg(multipleChoiceForm.id,index,true)'></i>
-                  </el-upload>
-                  <div><i class="el-icon-delete" :data-id="multipleChoiceForm.id" @click="delImg(multipleChoiceForm.id,true,index)"></i></div>
+                  <div class="imgList">
+                    <el-upload
+                      :action="uploadUrl"
+                      :on-success="uploadSuccess"
+                      :show-file-list="false"
+                      :beforeUpload="beforeAvatarUpload1"
+                      accept=".jpg,.jpeg,.png,.bmp,.gif,.svg"
+                      >
+                      <i class="el-icon-edit" @click='editImg(multipleChoiceForm.id,index,true)'></i>
+                    </el-upload>
+                    <div><i class="el-icon-delete" :data-id="multipleChoiceForm.id" @click="delImg(multipleChoiceForm.id,true,index)"></i></div>
+                  </div>
                 </div>
               </viewer>
             </div>
@@ -61,7 +60,7 @@
 				<el-form-item label="选项">
 						<el-checkbox-group v-model="choices">
 							<el-row>
-							<el-col :span="8" >
+							<el-col :span="16" >
 								<el-checkbox v-for="(item, index) in multipleChoiceForm.questionOption" :label="item.key" :key="index" @change="changeXX">
 									<span class="xuanx">{{item.key}}  </span>
 									<el-input v-model="item.value">
@@ -87,6 +86,11 @@
                   </div>
                   <div class="aedit" v-if="newList.questionBody == ''">
                     <input type="file" name="optionFile" @change="tirggerFile($event,index)" />
+                    <i class="el-icon-plus" v-if="!optionFileList[index].name"></i>
+                    <div v-if="optionFileList[index].name">
+                      <span>{{optionFileList[index].name?optionFileList[index].name : ''}}</span>
+                      <i class="el-icon-close" @click.stop="delOptionImg(index)"></i>
+                    </div>
                   </div>
 								</el-checkbox>
 							</el-col>
@@ -114,13 +118,13 @@
 </template>
 
 <script>
+  import Vue from 'vue'
   export default {
     props: [ 'multipleChoiceForm','isZH','fileListArr', 'propressNum'],
     created () {
       this.newList = JSON.parse(JSON.stringify(this.multipleChoiceForm))
-      this.$bus.$on('uploadFile',()=>{
-            // this.uploadFile()
-            this.optionSubmit()
+      this.$bus.$on('stUploadFile',(id)=>{
+            this.optionSubmit(id)
       })
     },
     mounted () {
@@ -167,7 +171,7 @@
         checkXX: [''],
         option: ['A', 'B', 'C', 'D', 'E', 'F'],
         optionFileList:[{},{},{},{}],
-        bodtFileList: [],
+        bodyFileList: [],
         ashow: false,
         imgshow: true,
         src: '',
@@ -179,11 +183,11 @@
       tirggerFile(event,index){
           let self = this;
           let file = event.target.files[0]
-          this.optionFileList[index] = file
+          Vue.set(this.optionFileList,index,file)
           this.multipleChoiceForm.optionFileList = this.optionFileList
           console.log(this.optionFileList)
       },
-      optionSubmit(){
+      optionSubmit(id){
         let formData = new FormData() // 创建form对象
         if(this.optionFileList[0].name){
           this.optionFileList.forEach(ele => {
@@ -196,7 +200,7 @@
           });
         }
         if(this.bodyFileList.length > 0 || this.optionFileList[0].name){
-          this.$uploadImg(this.$axiosURL.k_examinationQuestion + 'save/andRefersTqweqweo', formData).then((res) => {
+          this.$uploadImg('post', this.$axiosURL.fm_fileManipulate + '/add/' + id + '/images', formData).then((res) => {
             console.log(res)
           })
         }
@@ -273,6 +277,10 @@
 
         })
       },
+      delOptionImg(index){
+        var obj = {}
+        Vue.set(this.optionFileList,index,obj)
+      },
     	// 添加选项
     	addDomain(){
   	  		if(this.multipleChoiceForm.questionOption.length <6){
@@ -340,7 +348,7 @@
       	}
     },
     beforeDestroy() {
-      this.$bus.$off('uploadFile')
+      this.$bus.$off('stUploadFile')
     },
 
 }
@@ -355,38 +363,4 @@
 .el-row {
 	margin-bottom: -4px;
 }
-/*.xuanx {
-  color: #fff
-}*/
-  img{
-    width: 200px;
-    height: 200px;
-    vertical-align: middle;
-    margin-left: 6px;
-  }
-  .viewer {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      border: 1px solid red;
-  }
-  .aImg, .tImg {
-    display: inline-block;
-  }
-  .edit {
-    display: inline-flex;
-    justify-content: flex-end;
-    text-align: right;
-    font-size: 20px;
-    width: 200px;
-    margin-left: 6px;
-  }
-  .aedit{
-    display: inline-block;
-    font-size: 20px;
-  }
-  .add{
-    width: 200px;
-    height: 200px
-  }
 </style>

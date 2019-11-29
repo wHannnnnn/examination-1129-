@@ -3,10 +3,33 @@
 html{
     width: 100%;
     height: 100%;
-    @extend %bgcolor;
     @extend %fontcolor;
 }
+body{
+    height: 100%
+}
+#app {
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    font-size:16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #2c3e50;
+    margin: 0;
+    padding: 0;
+    min-width: 960px;
+    min-height: max-content;
+    min-height: -moz-max-content;
+    height:100%;
+    background-size:100% 100%;
+    @extend %bgcolor;
+}
 // 表格按钮
+// .tableChange .el-dialog__wrapper{
+//     width: 730px;
+// }
+.el-card__header{
+    text-align: center
+}
 .change,.el-dialog__wrapper{
     width: 1024px;
     margin: 0 auto;
@@ -62,7 +85,7 @@ html{
     }
 }
 .el-tooltip__popper.is-dark{
-    @extend %fontcolor;
+    color: #fff
 }
 .el-dialog__wrapper{
     width: 100%

@@ -1,30 +1,29 @@
 <template>
-	<el-form :model="radioChoiceForm" ref="radioChoiceForm" class="SJleft">
+	<el-form :model="radioChoiceForm" ref="radioChoiceForm" class="STleft">
 			<el-row>
 				<el-col :span="20" :offset="1">
 					<el-form-item label="题干部分：">
 						<el-input type="textarea" v-model="radioChoiceForm.questionBody"></el-input>
 
             <div v-if="imgshow">
-              <viewer :images="radioChoiceForm.eqBodyImageNameList1" class="tImg" v-if="radioChoiceForm.eqBodyImageNameList1">
-                <div>
+              <viewer :images="radioChoiceForm.eqBodyImageNameList1" style="width: 100%" class="tImg" v-if="radioChoiceForm.eqBodyImageNameList1">
+                <div v-for="(src,index) in radioChoiceForm.eqBodyImageNameList1" :key="src">
                   <img
-                    v-for="(src,index) in radioChoiceForm.eqBodyImageNameList1"
                     :src="getImgUrl(src)"
                     :key="index"
                   >
-                </div>
-                <div class="edit" v-for="(src,index) in radioChoiceForm.eqBodyImageNameList1" :key="index">
-                  <el-upload
-                    :action="uploadUrl"
-                    :on-success="uploadSuccess"
-                    :show-file-list="false"
-                    :beforeUpload="beforeAvatarUpload1"
-                    accept=".jpg,.jpeg,.png,.bmp,.gif,.svg"
-                    >
-                    <i class="el-icon-edit" @click='editImg(radioChoiceForm.id,index,true)'></i>
-                  </el-upload>
-                  <div><i class="el-icon-delete" :data-id="radioChoiceForm.id" @click="delImg(radioChoiceForm.id,index)"></i></div>
+                  <div class="imgList">
+                    <el-upload
+                      :action="uploadUrl"
+                      :on-success="uploadSuccess"
+                      :show-file-list="false"
+                      :beforeUpload="beforeAvatarUpload1"
+                      accept=".jpg,.jpeg,.png,.bmp,.gif,.svg"
+                      >
+                      <i class="el-icon-edit" @click='editImg(radioChoiceForm.id,index,true)'></i>
+                    </el-upload>
+                    <div><i class="el-icon-delete" :data-id="radioChoiceForm.id" @click="delImg(radioChoiceForm.id,index)"></i></div>
+                  </div>
                 </div>
               </viewer>
             </div>
@@ -63,7 +62,7 @@
 				<el-form-item label="选项">
 						<el-radio-group v-model="choices">
 							<el-row>
-							<el-col :span="8" >
+							<el-col :span="16" >
 								<el-radio v-for="(item, index) in radioChoiceForm.questionOption" :label="item.key" :key="index" @change="changeXX">
 									<span class="xuanx">{{item.key}}  </span>
 									<el-input v-model="item.value">
@@ -87,18 +86,11 @@
                   </div>
                   <div class="aedit" v-if="newList.questionBody == ''">
                     <input type="file" name="optionFile" @change="tirggerFile($event,index)" />
-                      <!-- <el-upload
-                        :action="uploadUrl1 + index"
-                        name="optionFile"
-                        :auto-upload="false"
-                        :file-list="optionFileList"
-                        :on-change="createOptionChange"
-                        :on-remove="handleOptionRemove"
-                        ref="optionUpload"
-                        >
-                        <i class="el-icon-edit"></i>
-                        <el-button type="success" @click="uploadFile" style="display: none"></el-button>
-                      </el-upload> -->
+                      <i class="el-icon-plus" v-if="!optionFileList[index].name"></i>
+                      <div v-if="optionFileList[index].name">
+                        <span>{{optionFileList[index].name?optionFileList[index].name : ''}}</span>
+                        <i class="el-icon-close" @click.stop="delOptionImg(index)"></i>
+                      </div>
                   </div>
 								</el-radio>
 							</el-col>
@@ -117,21 +109,20 @@
 		 	</el-row>
  	  		<slot name="handleQuestionData"></slot>
         	<slot name="editQuestionData"></slot>
-
     </el-form>
 </template>
 
 <script>
+  import Vue from 'vue'
   export default {
     props: [ 'radioChoiceForm', 'fileListArr', 'propressNum'],
     created () {
       this.newList = JSON.parse(JSON.stringify(this.radioChoiceForm))
+      this.$bus.$on('stUploadFile',(id)=>{
+            this.optionSubmit(id)
+      })
     },
     mounted () {
-      this.$bus.$on('uploadFile',()=>{
-            this.optionSubmit()
-      })
-
     	this.choices = this.radioChoiceForm.questionAnswer
       var that = this
       $('.SJleft').on("click",".tImg img",function(){
@@ -167,7 +158,7 @@
          optionFileList:[{},{},{},{}],
          bodyFileList:[],
          allList:[],
-        uploadUrl1: this.$axiosURL.k_examinationQuestion+ 'save/asdasd',
+        uploadUrl: '',
         index: 0,
         bodyOroption: null,
         src: '',
@@ -188,24 +179,24 @@
       tirggerFile(event,index){
           let self = this;
           let file = event.target.files[0]
-          this.optionFileList[index] = file
+          Vue.set(this.optionFileList,index,file)
           this.radioChoiceForm.optionFileList = this.optionFileList
+          console.log(this.radioChoiceForm.optionFileList)
       },
-
-      optionSubmit(){
+      optionSubmit(id){
         let formData = new FormData() // 创建form对象
         if(this.optionFileList[0].name){
           this.optionFileList.forEach(ele => {
-            formData.append('optionFile', ele, ele.name) // 通过append向form对象添加数据
+            formData.append('optionFile', ele) // 通过append向form对象添加数据
           });
         }
         if(this.bodyFileList != []){
           this.bodyFileList.forEach(ele => {
-            formData.append('bodyFile', ele.raw, ele.name) // 通过append向form对象添加数据
+            formData.append('bodyFile', ele.raw) // 通过append向form对象添加数据
           });
         }
         if(this.bodyFileList.length > 0 || this.optionFileList[0].name){
-          this.$uploadImg(this.$axiosURL.k_examinationQuestion + 'save/andRefersTqweqweo', formData).then((res) => {
+          this.$uploadImg('post', this.$axiosURL.fm_fileManipulate + '/add/' + id + '/images', formData).then((res) => {
             console.log(res)
           })
         }
@@ -215,7 +206,6 @@
   			this.radioChoiceForm.questionAnswer = this.choices
   		},
       uploadSuccess (val) {
-        console.log(this.addBody)
         if(this.addBody == true) {
           this.imgshow = false
           this.radioChoiceForm.eqBodyImageNameList1.push(val)
@@ -272,10 +262,14 @@
           this.radioChoiceForm.eqBodyImageNameList1.splice(index,1)
           this.imgshow = true
         })
-      }
+      },
+      delOptionImg(index){
+        var obj = {}
+        Vue.set(this.optionFileList,index,obj)
+      },
     }, 
     beforeDestroy() {
-      this.$bus.$off('uploadFile')
+      this.$bus.$off('stUploadFile')
     },
 
 }
@@ -285,37 +279,10 @@
 	margin-left: 0;
 }
 .el-radio {
-	margin-bottom: 6px;
+  margin-bottom: 6px;
+  width: 100%
 }
 .el-row {
 	margin-bottom: -4px;
 }
-/*.xuanx {
-  color: #fff
-}*/
-  img{
-    width: 200px;
-    height: 200px;
-    vertical-align: middle;
-    margin-left: 6px;
-  }
-  .aImg, .tImg {
-    display: inline-block;
-  }
-  .edit {
-    display: inline-flex;
-    justify-content: flex-end;
-    text-align: right;
-    font-size: 20px;
-    width: 200px;
-    margin-left: 6px;
-  }
-  .aedit{
-    display: inline-block;
-    font-size: 20px;
-  }
-  .add{
-    width: 200px;
-    height: 200px
-  }
 </style>

@@ -39,6 +39,9 @@
       changeId(name){
           this.$bus.$emit('searchTopic',name)
       }
-    }
+    },
+    beforeDestroy() {
+      this.$bus.$off('searchTopic')      
+    },
   }
 </script>

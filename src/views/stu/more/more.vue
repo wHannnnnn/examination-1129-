@@ -119,7 +119,7 @@ export default {
 
   methods: {
     clickRMSPtable:function(row){
-      sessionStorage.setItem('LSKJ',JSON.stringify(row))
+      localStorage.setItem('LSKJ',JSON.stringify(row))
       console.log(this.$store.state.LSZL);
       const route = this.$router.resolve({name:'classRoom'})
       window.open(route.href,'_blank',)
@@ -131,7 +131,7 @@ export default {
       return this.$tools.UTCtoDate(date)
     },
     initData:function(){
-      this.lx = this.$route.params.lx||sessionStorage.getItem('morelx')
+      this.lx = this.$route.params.lx||localStorage.getItem('morelx')
       this.findPaperPage()
     },
     findPaperPage:function(){
@@ -211,8 +211,8 @@ export default {
   },
  
   created:function(){
-    this.studentLoginUser = JSON.parse(sessionStorage.getItem('loginUser'))
-    this.student_aId = sessionStorage.getItem('student_aId')
+    this.studentLoginUser = JSON.parse(localStorage.getItem('loginUser'))
+    this.student_aId = localStorage.getItem('student_aId')
   },
   mounted:function(){
     this.initData()

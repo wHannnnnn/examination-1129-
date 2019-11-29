@@ -4,11 +4,11 @@
             <impheader></impheader>
         </div>
         <div class="search">
-            <el-input placeholder="请输入内容" v-model="formInline.GJZ" class="input-with-select">
+            <el-input placeholder="请输入内容" v-model="formInline.GJZ" class="input-with-select" @keyup.enter.native="onlineSearch">
                 <el-button slot="append" icon="el-icon-search" @click='onlineSearch'></el-button>
             </el-input>
         </div>
-        <div style="display: flex">
+        <div class="online_con">
             <div id="left-nav" :class="headerFixed?'isFixed':''"  v-if="this.$route.path == '/hotTopic'">
                 <el-menu default-active="0" class="el-menu-vertical-demo" @select="menuSelected"  @open="menuOpen" :collapse="true"
                     active-text-color="black">
@@ -71,6 +71,9 @@
 
             </div>
         </div>
+        <div class="app_bottom">
+              <bottom/>
+        </div>
         <el-dialog title="请先登录" :visible.sync="loginShow" width="30%" @close="loginShowClose">
             <newlogin></newlogin>
         </el-dialog>
@@ -80,6 +83,7 @@
 import impheader from '@/components/layout/header1'
 import NavMenu from './navMenu.vue'
 import newlogin from '@/components/layout/newlogin'
+import bottom from "@/components/layout/bottom.vue"
 export default {
     data () {
         return {
@@ -165,7 +169,8 @@ export default {
     components:{
         impheader,
         NavMenu,
-        newlogin
+        newlogin,
+        bottom
     },
     methods:{
         handleSizeChange(){},
@@ -256,6 +261,7 @@ export default {
             this.headerFixed = scrollTop > this.offsetTop
         },
         onlineSearch(){
+            this.$bus.$emit('allsearchTopic',this.formInline.GJZ)
         },
         menuSelected(index,indexPath){
         },
@@ -302,7 +308,8 @@ export default {
         this.getCount()
 
     },
-    destroyed() {
+    beforeDestroy() {
+      this.$bus.$off('allsearchTopic')      
     },
 }
 </script>

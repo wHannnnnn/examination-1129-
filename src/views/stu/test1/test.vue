@@ -501,6 +501,9 @@
       </el-col>
     </el-row>
   </div>
+  <div class="app_bottom">
+        <bottom/>
+  </div>
   <el-dialog
       :visible.sync="dialogVisibleFJ"
       top='100px'
@@ -518,11 +521,13 @@
 <script>
 import uniPlayer from '../unit/unit_player.vue'
 import impheader from '@/components/layout/header1'
+import bottom from "@/components/layout/bottom.vue"
 export default {
   name: 'index',
   components:{
     uniPlayer,
-    impheader
+    impheader,
+    bottom
   },
   data () {
     return {
@@ -629,11 +634,11 @@ export default {
           })
         })
         this.progress.DQST = a
-        this.progress.BFS = parseInt(a/JSON.parse(sessionStorage.getItem('KSdata')).papers[0].paper.examinationQuestions.length*100)
+        this.progress.BFS = parseInt(a/JSON.parse(localStorage.getItem('KSdata')).papers[0].paper.examinationQuestions.length*100)
 
         //localstorage存储
         if (this.STdataFL) {
-          localStorage.setItem(sessionStorage.getItem('ticket'), JSON.stringify(this.STdataFL))
+          localStorage.setItem(localStorage.getItem('ticket'), JSON.stringify(this.STdataFL))
         }
         
       },
@@ -695,10 +700,10 @@ export default {
     submitPaper:function(){
       
       var params = {
-        ticket:sessionStorage.getItem('ticket'),
-        realName:sessionStorage.getItem('realName'),
-        examId:JSON.parse(sessionStorage.getItem('KSdata')).id,
-        paperId: JSON.parse(sessionStorage.getItem('KSdata')).papers[0].paper.id,
+        ticket:localStorage.getItem('ticket'),
+        realName:localStorage.getItem('realName'),
+        examId:JSON.parse(localStorage.getItem('KSdata')).id,
+        paperId: JSON.parse(localStorage.getItem('KSdata')).papers[0].paper.id,
         answers: []
      }
      this.STdataFL.forEach((element,index)=>{
@@ -709,22 +714,22 @@ export default {
      console.log(params);
      this.$axiosStuResBody1('post',this.$axiosURL.e_examinationPaper+ 'submitPaper',params).then((res)=>{
       if (res) {
-        localStorage.removeItem(sessionStorage.getItem('ticket'))
+        localStorage.removeItem(localStorage.getItem('ticket'))
         this.$message.success('交卷成功！')
         clearInterval(this.time)
-        this.$router.push({path:'/test_login'})
+        this.$router.push({path:'/'})
       }
      })
     },
      initData:function(){
       //所有试题
-      this.STdata = JSON.parse(sessionStorage.getItem('KSdata')).papers[0].paper
+      this.STdata = JSON.parse(localStorage.getItem('KSdata')).papers[0].paper
       console.log('所有试题',this.STdata);
       //试题数量
       this.progress.ST = this.STdata.examinationQuestions.length
       //考试倒计时
       this.$axiosStuRes('get',this.$axiosURL.e_examination+ 'serverTime','').then((res)=>{
-        var endTime = new Date(JSON.parse(sessionStorage.getItem('KSdata')).endTime).getTime()
+        var endTime = new Date(JSON.parse(localStorage.getItem('KSdata')).endTime).getTime()
         var serverTime = res
         if (endTime && serverTime) {
           var isOver = serverTime-endTime<= 0 ? false:true
@@ -735,14 +740,14 @@ export default {
               type: 'error',
               duration:0
             });
-            this.$router.push({path:'/test_login'})
+            this.$router.push({path:'/'})
             return
           }else{
             var timeC = endTime-serverTime
             this.time = window.setInterval(()=>{
               console.log(timeC);
               timeC -= 1000
-              this.overtime.BFS = parseInt(100 - (timeC/1000)/(JSON.parse(sessionStorage.getItem('KSdata')).totalTime*60)*100)
+              this.overtime.BFS = parseInt(100 - (timeC/1000)/(JSON.parse(localStorage.getItem('KSdata')).totalTime*60)*100)
               this.overtime.value = this.$tools.MtoSFM(timeC/1000)
               //停止
               if (timeC<=0) {
@@ -854,21 +859,21 @@ export default {
 
   },
   created:function(){
-    this.$store.state.dictionarys = JSON.parse(sessionStorage.getItem('dictionarys'))
+    this.$store.state.dictionarys = JSON.parse(localStorage.getItem('dictionarys'))
   },
   mounted:function(){
     window.onbeforeunload=function(){return '确定要离开吗？'}
     this.initData()
 
     //判断localStorage中是否有值
-    if (localStorage.getItem(sessionStorage.getItem('ticket'))) {
+    if (localStorage.getItem(localStorage.getItem('ticket'))) {
       
       this.$confirm('检测到试题答案缓存,是否恢复?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-            this.STdataFL = JSON.parse(localStorage.getItem(sessionStorage.getItem('ticket')))
+            this.STdataFL = JSON.parse(localStorage.getItem(localStorage.getItem('ticket')))
             this.$message.success('本地缓存已恢复！')
         }).catch(() => {
             this.initSTdataFL()

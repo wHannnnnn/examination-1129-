@@ -269,8 +269,8 @@ export default {
 </script>
 <style scoped>
     .chart-box {
-      min-height: 300px;
-      max-height: 300px;
+      min-height: 500px;
+      max-height: 500px;
       background: transparent;
     }
     .el-card.is-always-shadow, .el-card.is-hover-shadow:focus, .el-card.is-hover-shadow:hover{

@@ -14,7 +14,7 @@
                 </div>
 
 
-                <div class="searchListHide"  v-if="searchListShow==false" style="display: flex;height:calc(100% - 60px)">
+                <div class="searchListHide"  v-if="searchListShow==false" style="display: flex;height:calc(100% - 56px)">
                   <div class="app_nav">
                       <sidenav></sidenav>
                   </div>
@@ -42,7 +42,7 @@
             <newlogin></newlogin>
           </div>
           <div class="app_bottom">
-            <bottom/>
+              <bottom/>
           </div>
   </div>
 </template>
@@ -72,6 +72,7 @@ export default {
       sidenav,
       newlogin,
       allsearch,
+      bottom
     //   addSJ,
     //   addKS
   },
@@ -124,14 +125,14 @@ export default {
     // this.checktime()
   },
   created:function(){
-    // this.$store.state.loginUser=JSON.parse(sessionStorage.getItem('loginUser'))
+    // this.$store.state.loginUser=JSON.parse(localStorage.getItem('loginUser'))
     // console.log(this.$store.state.loginUser);
-    // this.$store.state.dictionarys = JSON.parse(sessionStorage.getItem('dictionarys'))
+    // this.$store.state.dictionarys = JSON.parse(localStorage.getItem('dictionarys'))
     // console.log('dictionarys',this.$store.state.dictionarys);
-    // this.$store.state.aId = sessionStorage.getItem('aId')
-    // this.$store.state.role = sessionStorage.getItem('role')
+    // this.$store.state.aId = localStorage.getItem('aId')
+    // this.$store.state.role = localStorage.getItem('role')
     this.$axiosStuRes('get',this.$axiosURL.b_dictionarys,'').then((res)=>{
-      sessionStorage.setItem('dictionarys', JSON.stringify(res))
+      localStorage.setItem('dictionarys', JSON.stringify(res))
       this.$store.state.dictionarys = res;
     })
   }

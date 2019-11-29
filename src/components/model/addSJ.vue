@@ -3,7 +3,7 @@
 		<el-dialog
 		title="创建试卷"
 		:visible.sync="this.$store.state.addSJ.dialogVisible"
-		width="1200px"
+		width="1000px"
 		top = "20px"
 		:close-on-click-modal=false
 		:before-close="handleClose">
@@ -686,7 +686,7 @@ layout="total, sizes, prev, pager, next, jumper"
 				                  <el-form-item label="选项内容: ">
 				                    <p v-for="(item2,index) in details.questionOption">
 				                    <span>{{item2.split(';')[0]}}</span> &nbsp;&nbsp;<b>{{item2.split(';')[1]}}</b>
-                     				<viewer class="aImg" v-if="details.eqOptionImageNameList">
+                     				<viewer class="aImg" v-if="details.eqOptionImageNameList&&details.eqOptionImageNameList.length>0">
                      				 <img
                      				     :src="getImgUrl(details.eqOptionImageNameList[index])" 
                      				     :key="index"
@@ -1155,11 +1155,12 @@ layout="total, sizes, prev, pager, next, jumper"
 			          cancelButtonText: '返回列表',
 			          type: 'success'
 			        }).then(() => {
-			          	this.$bus.$emit('createdKS',res)
+						  this.$bus.$emit('createdKS',res)
+						  this.$bus.$emit('allKS',res)						  
 			        }).catch(() => {
 			            this.clearnAllData()
 						this.$store.state.addSJ.dialogVisible=false
-						this.$bus.$emit('findPaperPageSJ','')     
+						this.$bus.$emit('findPaperPageSJ','') 
 			        });
 				})
 				
@@ -1347,7 +1348,6 @@ layout="total, sizes, prev, pager, next, jumper"
 		    	//清空cascader
 		    	var obj = {}
 		    	obj.stopPropagation = () =>{}
-	    		this.$refs.cascader2.clearValue(obj)
 		    	this.formXTZJ.STLX = ''
 		    	this.formXTZJ.GJZ = ''    	
 		    },
@@ -1468,7 +1468,6 @@ layout="total, sizes, prev, pager, next, jumper"
 		    	//清空cascader
 		    	var obj = {}
 		    	obj.stopPropagation = () =>{}
-		    	this.$refs.cascader1.clearValue(obj)
 		    	this.formCTZJ.STLX = ''
 		    	this.formCTZJ.STSL = ''
 		    	this.formCTZJ.DTFZ = ''
@@ -1480,7 +1479,7 @@ layout="total, sizes, prev, pager, next, jumper"
 		    	//清空cascader
 		    	var obj = {}
 		    	obj.stopPropagation = () =>{}
-	    		this.$refs.cascader3.clearValue(obj)
+	    		// this.$refs.cascader3.clearValue(obj)
 		    	this.formSJZJ.STLX = ''
 		    	this.formSJZJ.STSL = ''
 		    	this.formSJZJ.DTFZ = ''	
@@ -1598,7 +1597,7 @@ layout="total, sizes, prev, pager, next, jumper"
 		      },		
 		},
 		created:function(){
-		    this.dictionarys = JSON.parse(sessionStorage.getItem('dictionarys'))
+		    this.dictionarys = JSON.parse(localStorage.getItem('dictionarys'))
 		},
 		updated:function(){
 		    var that = this
@@ -1663,12 +1662,6 @@ layout="total, sizes, prev, pager, next, jumper"
 		  //       this.STall=[]  //总试题列表
 		  //       this.STallZL=[]  //试题总览列表
 		  //       this.details={} //试题预览
-				console.log(this.XTZJdata);
-				console.log(this.SJZJdata);
-				console.log(this.CTZJdata);
-				console.log(this.STall);
-				console.log(this.STallZL);
-				console.log(this.details);
 			})
 
 			this.$bus.$on('clickLook',()=>{

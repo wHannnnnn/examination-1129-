@@ -25,6 +25,9 @@
     </div>
     <addSJ/>
     <addKS/>
+    <div class="app_bottom">
+      <bottom/>
+    </div>
 </div>
 </template>
 
@@ -32,8 +35,8 @@
 import impheader from "../../components/layout/header2.vue"
 import SideNav from "../../components/layout/SideNav2.vue"
 import bottom from "../../components/layout/bottom.vue"
-import addSJ from "../../components/model/addSJ.vue"
-import addKS from "../../components/model/addKS.vue"
+import addSJ from "@/components/model/addSJ.vue"
+import addKS from "@/components/model/addKS.vue"
 export default {
   name: 'HelloWorld',
   data () {
@@ -44,9 +47,9 @@ export default {
   components: {
       impheader,
       SideNav,
+      bottom,
       addSJ,
-      addKS,
-      bottom
+      addKS
   },
   methods: {
     checktime:function(){
@@ -66,12 +69,12 @@ export default {
     this.checktime()
   },
   created:function(){
-    this.$store.state.loginUser=JSON.parse(sessionStorage.getItem('loginUser'))
+    this.$store.state.loginUser=JSON.parse(localStorage.getItem('loginUser'))
     console.log(this.$store.state.loginUser);
-    this.$store.state.dictionarys = JSON.parse(sessionStorage.getItem('dictionarys'))
+    this.$store.state.dictionarys = JSON.parse(localStorage.getItem('dictionarys'))
     console.log('dictionarys',this.$store.state.dictionarys);
-    this.$store.state.aId = sessionStorage.getItem('aId')
-    this.$store.state.role = sessionStorage.getItem('role')
+    this.$store.state.aId = localStorage.getItem('aId')
+    this.$store.state.role = localStorage.getItem('role')
   }
 }
 </script>

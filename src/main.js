@@ -90,6 +90,7 @@ Vue.prototype.$axiosResBody = resBody
 Vue.prototype.$axiosResBody1 = resBody1
 Vue.prototype.$axiosRes = res
 Vue.prototype.$axiosRes1 = res1
+Vue.prototype.$axiosRes2 = res2
 Vue.prototype.$axiosDownload = download
 Vue.prototype.$axiosDownload2 = download2
 
@@ -118,10 +119,10 @@ const teaList = ['/teaindex', '/Home', '/testMaintenance', '/StuManagement', '/q
 //     next({ path: '/login' })
 // } 
 router.beforeEach((to, from, next) => {
-  //const LOGIN = JSON.parse(sessionStorage.getItem('login'));
-  const LOGIN = sessionStorage.getItem('access_token');
+  //const LOGIN = JSON.parse(localStorage.getItem('login'));
+  const LOGIN = localStorage.getItem('access_token');
   if(teaList.indexOf(to.path) !== -1){
-      if(sessionStorage.getItem('role') == 'STUDENT' || !LOGIN){
+      if(localStorage.getItem('role') == 'STUDENT' || !LOGIN){
         next({ path: '/' })
       } else {
           next() 

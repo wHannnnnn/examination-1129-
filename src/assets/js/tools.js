@@ -75,10 +75,10 @@ const cutString = function (str,len) {
 // 判断用户loginUser.id是否存在
 function userid(val){
 	if(val=='id'){
-		return sessionStorage.getItem('loginUser') == null ? null : JSON.parse(sessionStorage.getItem('loginUser')).id
+		return localStorage.getItem('loginUser') == null ? null : JSON.parse(localStorage.getItem('loginUser')).id
 	}
 	if(val=='username'){
-		return sessionStorage.getItem('loginUser') == null ? null : JSON.parse(sessionStorage.getItem('loginUser')).username
+		return localStorage.getItem('loginUser') == null ? null : JSON.parse(localStorage.getItem('loginUser')).username
 	}  
 }
 const tools = {

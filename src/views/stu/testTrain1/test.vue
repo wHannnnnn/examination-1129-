@@ -36,7 +36,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item>
+        <el-form-item style="width: 100px">
           <el-button type="primary" @click="onSubmit">开始测试</el-button>
         </el-form-item>
       </el-form>
@@ -198,9 +198,9 @@
       </div>
     </div>
     <div class='testTrain_bottom' v-if='STdata.length != 0'>
-      <div class="testTrain_bottom_title">
-        答题卡
-      </div>
+      <!-- <div class="testTrain_bottom_title"> -->
+        <span style="font-size: 18px">答题卡: </span>
+      <!-- </div> -->
       <div v-for="(item,index) in STdata" style="display: inline-block;margin-right: 8px;">
         <el-tag :type="nowIndex >=index?'warning':''">{{index+1}}</el-tag>
       </div>
@@ -216,22 +216,27 @@
         <el-button @click="dialogVisibleFJ = false">关 闭</el-button>
       </span>
     </el-dialog>
+      <el-dialog title="请先登录" :visible.sync="loginShow" width="30%">
+          <newlogin></newlogin>
+      </el-dialog>
   </div>
 </template>
 
 <script>
 import indexTop from '../unit/index_top.vue'
 import uniPlayer from '../unit/unit_player.vue'
+import newlogin from '@/components/layout/newlogin'
 export default {
   name: 'index',
   components:{
     indexTop,
-    uniPlayer
+    uniPlayer,
+    newlogin
   },
   data () {
     return {
       lx:null,  //2错题训练 3日常 4难度
-
+      loginShow: false,
       ZSDdata:[],
       formInline:{
         ZSD:[],
@@ -411,7 +416,7 @@ export default {
     },
     trueQuestions:function(){
       if (this.lx==2) {
-        var aId = sessionStorage.getItem('aId')
+        var aId = localStorage.getItem('aId')
         this.$axiosStuResBody('Delete',this.$axiosURL.K_neoUser+'bash/delete/'+aId+'/wrongQuestions',[this.STdata[this.nowIndex].id]).then((res)=>{
           this.STdata.splice(this.nowIndex,1)
           this.nowIsQuestionAnswer = false
@@ -420,13 +425,13 @@ export default {
     },
     wrongQuestions:function(){
       if (this.lx==3||this.lx==4) {
-        var aId = sessionStorage.getItem('aId')
+        var aId = localStorage.getItem('aId')
         this.$axiosStuResBody('post',this.$axiosURL.K_neoUser+'bash/create/'+aId+'/wrongQuestions',[this.STdata[this.nowIndex].id]).then((res)=>{
         })
       }
     },
     removeQue:function(){
-      var aId = sessionStorage.getItem('aId')
+      var aId = localStorage.getItem('aId')
       this.$axiosStuResBody('Delete',this.$axiosURL.K_neoUser+'bash/delete/'+aId+'/wrongQuestions',[this.STdata[this.nowIndex].id]).then((res)=>{
         this.$message.success('此题已从错题库中移除')
         this.STdata.splice(this.nowIndex,1)
@@ -465,10 +470,13 @@ export default {
             conditions : {
               name: relZSD
             },
-            neoUserId: sessionStorage.getItem('aId')
+            neoUserId: localStorage.getItem('aId')
         }
         this.$axiosStuResBody('post',this.$axiosURL.k_examinationQuestion+'find/simulateQuestion',param).then((res)=>{
-          console.log(res)
+          console.log(res,9999)          
+          if(res.error == "invalid_token") {
+            this.loginShow = true
+          }
           if (res.responseState == 'success') {
             if (this.formInline.LXFS) {
               //顺序出题
@@ -508,13 +516,22 @@ export default {
             conditions : {
               name: relZSD
             },
-            neoUserId: sessionStorage.getItem('aId')
+            neoUserId: localStorage.getItem('aId')
         }
         this.$axiosStuResBody('post',this.$axiosURL.k_examinationQuestion+'find/simulateQuestion',param).then((res)=>{
+          console.log(res,7777)             
+          if(res.error == "invalid_token") {
+            this.loginShow = true
+          }
           if (res.responseState == 'success') {
             if (this.formInline.LXFS) {
               //顺序出题
               if (res.entities) {
+                  res.entities.forEach((element,index)=>{
+                    if(element.questionType == "COMPREHENSIVE"){
+                      res.entities.splice(index,1)
+                    }
+                  })
                 this.STdata = res.entities
               } else {
                 this.$message.error('所选范围不存在试题')
@@ -523,6 +540,11 @@ export default {
             } else {
               // 随机出题
               if (res.nonRepeatedEntities ) {
+                  res.nonRepeatedEntities.forEach((element,index)=>{
+                    if(element.questionType == "COMPREHENSIVE"){
+                      res.nonRepeatedEntities.splice(index,1)
+                    }
+                  })
                 this.STdata = res.nonRepeatedEntities
               } else {
                 this.$message.error('所选范围不存在试题')
@@ -550,9 +572,14 @@ export default {
             conditions : {
               name: relZSD
             },
-            neoUserId: sessionStorage.getItem('aId')
+            neoUserId: localStorage.getItem('aId')
         }
         this.$axiosStuResBody('post',this.$axiosURL.k_examinationQuestion+'find/simulateQuestion',param).then((res)=>{
+          if(res.error == "invalid_token") {
+            this.loginShow = true
+            return
+          }
+          console.log(res,8888)
           if (res.responseState == 'success') {
             if (this.formInline.LXFS) {
               //顺序出题
@@ -601,7 +628,7 @@ export default {
         } else if(this.findQueType(element.questionType) == '填空题'){
           element.studentAnswer = [{value:''},{value:''},{value:''},{value:''},{value:''},{value:''},{value:''},{value:''},{value:''},{value:''}]
         }else if(this.findQueType(element.questionType) == '综合题'){
-          this.STdata.splice(index,1)
+          // this.STdata.splice(index,1)
         }else{
           element.studentAnswer = ''
         }
@@ -621,10 +648,10 @@ export default {
   },
  
   created:function(){
-    // this.lx = JSON.parse(sessionStorage.getItem('testTrain'))
+    // this.lx = JSON.parse(localStorage.getItem('testTrain'))
     this.lx = this.$route.query.testTrain
     console.log(this.lx)
-    this.dictionarys = JSON.parse(sessionStorage.getItem('dictionarys'))
+    this.dictionarys = JSON.parse(localStorage.getItem('dictionarys'))
     console.log(this.dictionarys);
     this.$axiosStuRes('get',this.$axiosURL.k_knowledgeHierachy+ '4/all',{}).then((res)=>{
       this.ZSDdata = this.getTreeData(res);
@@ -641,4 +668,5 @@ export default {
 
 
 <style scoped>
+
 </style>

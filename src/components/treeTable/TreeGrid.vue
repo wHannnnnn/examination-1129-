@@ -8,7 +8,7 @@
     @select-all="checkChangeAll"
     @select="checkChange"  
     :row-class-name="showTr"
-    max-height="500">
+    >
 <!--     <el-table-column
       type="selection"
       width="55"

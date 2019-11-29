@@ -2,11 +2,74 @@
   <div>
       <el-row>
         <el-col :span="11" :offset="1">
-          <el-form :model="reorganizeForm" ref="reorganizeForm">
+          <el-form :model="reorganizeForm" ref="reorganizeForm" class="STleft">
           		<el-row>
           			<el-col :span="23" :offset="1">
           				<el-form-item label="题干：" prop="questionBody">
                       <el-input type="textarea" :autosize="autosize" v-model="reorganizeForm.questionBody"></el-input>
+                      <div v-if="imgshow">
+                        <viewer :images="reorganizeForm.eqBodyImageNameList1" class="tImg" v-if="reorganizeForm.eqBodyImageNameList1">
+                          <div v-for="(src,index) in reorganizeForm.eqBodyImageNameList1" :key="src">
+                            <img
+                              :src="getImgUrl(src)"
+                              :key="index"
+                            >
+                            <div class="imgList">
+                              <el-upload
+                                :action="uploadUrl"
+                                :on-success="uploadSuccess"
+                                :show-file-list="false"
+                                :beforeUpload="beforeAvatarUpload1"
+                                accept=".jpg,.jpeg,.png,.bmp,.gif,.svg"
+                                >
+                                <i class="el-icon-edit" @click='editImg(reorganizeForm.id,index,true)'></i>
+                              </el-upload>
+                              <div>
+                                  <i class="el-icon-delete" :data-id="reorganizeForm.id" @click="delImg(reorganizeForm.id,index)"></i>
+                              </div>
+                            </div>
+                            <!-- <div></div> -->
+                          </div>
+                          <!-- <div class="edit" v-for="(src,index) in reorganizeForm.eqBodyImageNameList1" :key="index">
+                            <el-upload
+                              :action="uploadUrl"
+                              :on-success="uploadSuccess"
+                              :show-file-list="false"
+                              :beforeUpload="beforeAvatarUpload1"
+                              accept=".jpg,.jpeg,.png,.bmp,.gif,.svg"
+                              >
+                              <i class="el-icon-edit" @click='editImg(reorganizeForm.id,index,true)'></i>
+                            </el-upload>
+                            <div><i class="el-icon-delete" :data-id="reorganizeForm.id" @click="delImg(reorganizeForm.id,index)"></i></div>
+                          </div> -->
+                        </viewer>
+                      </div>
+                      <div @click="addImg(reorganizeForm.id)" v-if="newList.questionBody != ''">
+                        <el-upload
+                          class="add"
+                          :action="uploadUrl"
+                          list-type="picture-card"
+                          :on-success="uploadSuccess"
+                          :show-file-list="false"
+                          >
+                          <i class="el-icon-plus"></i>
+                        </el-upload>
+                      </div>
+                      <div class="createImg" v-if="newList.questionBody == ''">
+                          <el-upload
+                            action="#"
+                            name="bodyFile"
+                            list-type="picture-card"
+                            :auto-upload="false"
+                            :on-change="createChange"
+                            :on-remove="handleRemove"
+                            :file-list="afileList"
+                            ref="upload"
+                            >
+                              <i slot="default" class="el-icon-plus"></i>
+                              <!-- <el-button type="success" @click="uploadFile" style="display: none"></el-button> -->
+                          </el-upload>
+                      </div>
           				</el-form-item>
           			</el-col>
           	 	</el-row>
@@ -270,6 +333,13 @@ import lsquestion from '@/components/zj_questionMaintenance/LSquestion.vue'
   export default {
     props: [ 'reorganizeForm', 'addOrDel', 'fileListArr', 'propressNum', 'fileList' ],
     created () {
+      this.$bus.$on('removeId',()=>{
+            this.removeId()
+      })
+      this.newList = JSON.parse(JSON.stringify(this.reorganizeForm))
+      this.$bus.$on('zhUploadFile',(id)=>{
+            this.optionSubmit(id)
+      })
     },
     mounted () {
       this.$axiosGet(this.$axiosURL.b_dictionarys,{}).then((res)=>{
@@ -301,6 +371,14 @@ import lsquestion from '@/components/zj_questionMaintenance/LSquestion.vue'
     },
     data () {
       return {
+          imgshow: true,
+          addBody: false,
+          newList: null,
+          bodyFileList: [],
+          afileList:[],
+          uploadUrl: '',
+          index: 0,
+          bodyOroption: null,
           autosize: {minRows: 2},
           testingTypes: [],
           questionsTestingType: '',
@@ -364,6 +442,66 @@ import lsquestion from '@/components/zj_questionMaintenance/LSquestion.vue'
       lsquestion
     },
     methods: {
+      optionSubmit(id){
+        let formData = new FormData() // 创建form对象
+        if(this.bodyFileList != []){
+          this.bodyFileList.forEach(ele => {
+            formData.append('bodyFile', ele.raw, ele.name) // 通过append向form对象添加数据
+          });
+        }
+        if(this.bodyFileList.length > 0){
+          this.$uploadImg('post', this.$axiosURL.fm_fileManipulate + '/add/' + id + '/images', formData).then((res) => {
+            console.log(res)
+          })
+        }
+      },
+      handleRemove(file,fileList) {
+        this.bodyFileList = fileList
+      },
+      createChange(file,fileList) {
+        this.bodyFileList = fileList
+      },
+      editImg(id,index,i){
+        this.uploadUrl = this.$axiosURL.fm_fileManipulate + '/modify/' + id + '/image/' + i  + '/' + index
+        if(i == true) {
+            this.bodyOroption = true
+        } else {
+            this.bodyOroption = false
+        }
+        this.index = index
+      },
+      delImg(id,index){
+        this.$axiosResBody1('delete',this.$axiosURL.fm_fileManipulate + '/delete/' + id + '/image/' + true  + '/' + index).then((res)=>{
+          this.imgshow = false
+          this.reorganizeForm.eqBodyImageNameList1.splice(index,1)
+          this.imgshow = true
+        })
+      },
+      addImg(id){
+        this.uploadUrl = this.$axiosURL.fm_fileManipulate + '/add/' + id + '/image/' + true
+        this.addBody = true
+      },
+      uploadSuccess (val) {
+        console.log(this.addBody)
+        if(this.addBody == true) {
+          this.imgshow = false
+          this.reorganizeForm.eqBodyImageNameList1.push(val)
+          this.imgshow = true
+          this.addBody = false
+        }else {
+          if(this.bodyOroption == true) {
+            this.imgshow = false
+            this.reorganizeForm.eqBodyImageNameList1.splice(this.index,1,val)
+            this.imgshow = true
+          } else {
+            $('.aImg img').eq(this.index).attr('src',this.$imgThumbUrl + val)
+          }
+        }
+         this.src = val
+      },
+      beforeAvatarUpload1(file){
+        console.log(file)
+      },
       getImgUrl:function(url){
         return this.$imgThumbUrl + url
       },
@@ -373,6 +511,20 @@ import lsquestion from '@/components/zj_questionMaintenance/LSquestion.vue'
         } else {
           $('.aImg img').eq(index).attr('src',this.$imgUrl + src)
         }
+      },
+      getSon(data){
+          this.$axiosResBody1('post',this.$axiosURL.k_examinationQuestion+ 'save/subEq/only',data).then((res)=>{
+            this.reorganizeForm.subQuestionsId.push(res.id)
+            this.reorganizeForm.examinationSubquestions.push(res)
+            this.$bus.$emit('stUploadFile',res.id)
+            this.$nextTick(()=>{
+              this.questionsTestingType = ''
+            })
+          })
+          console.log(this.reorganizeForm.examinationSubquestions)
+      },
+      removeId(){
+        this.reorganizeForm.subQuestionsId = []
       },
       addQuestion(){
         if(this.questionsTestingType == ''){
@@ -384,6 +536,17 @@ import lsquestion from '@/components/zj_questionMaintenance/LSquestion.vue'
         }
 
         if(this.questionsTestingType !== '' && this.questionsTestingType == 'MULTIPLE_CHOICE'){
+          if(this.multipleChoiceForm.optionFileList){
+            for (let i = 0; i < this.multipleChoiceForm.optionFileList.length; i++) {
+              if(!this.multipleChoiceForm.optionFileList[i].name){
+                  this.$message({
+                    message: '选项填完',
+                    type: 'error'
+                  })
+                return
+              }
+            }
+          }
         
           if(this.multipleChoiceForm.questionBody == '') {
               this.$message({
@@ -454,7 +617,20 @@ import lsquestion from '@/components/zj_questionMaintenance/LSquestion.vue'
             } else {
               this.multipleChoiceForm['createTime'] = Date.parse(new Date())
               this.multipleChoiceForm['createUserID'] = this.$store.state.aId
-              this.reorganizeForm.examinationSubquestions.push(this.multipleChoiceForm)  
+              // this.reorganizeForm.examinationSubquestions.push(this.multipleChoiceForm)
+              // 添加单题接口（新）
+              var array = []
+              for(var i=0; i< this.multipleChoiceForm.questionOption.length; i++){
+                  var str = ''
+                  str = this.multipleChoiceForm.questionOption[i].key + '.' + this.multipleChoiceForm.questionOption[i].value
+                  array.push(str)
+              }
+              this.multipleChoiceForm.questionOption = array
+
+              var str =  this.multipleChoiceForm.questionAnswer
+              this.multipleChoiceForm.questionAnswer = str.join(',')
+              // 创建子试题接口
+              this.getSon(this.multipleChoiceForm)
             }
 
             this.multipleChoiceForm = {
@@ -531,7 +707,14 @@ import lsquestion from '@/components/zj_questionMaintenance/LSquestion.vue'
             } else {
               this.gapFillingForm['createTime'] = Date.parse(new Date())
               this.gapFillingForm['createUserID'] = this.$store.state.aId
-              this.reorganizeForm.examinationSubquestions.push(this.gapFillingForm)  
+              // this.reorganizeForm.examinationSubquestions.push(this.gapFillingForm)
+
+              var arr = []
+              for(var i=0; i< this.gapFillingForm.questionAnswer.length; i++){
+                  arr.push(this.gapFillingForm.questionAnswer[i].value)
+              }
+              this.gapFillingForm.questionAnswer = arr.join(',')
+              this.getSon(this.gapFillingForm)
             }
             this.gapFillingForm = {
               questionAnalyze: '',
@@ -575,7 +758,8 @@ import lsquestion from '@/components/zj_questionMaintenance/LSquestion.vue'
             } else {
               this.judgeForm['createTime'] = Date.parse(new Date())
               this.judgeForm['createUserID'] = this.$store.state.aId
-              this.reorganizeForm.examinationSubquestions.push(this.judgeForm)  
+              // this.reorganizeForm.examinationSubquestions.push(this.judgeForm)
+              this.getSon(this.judgeForm)
             }
             this.judgeForm = {
               questionAnalyze: '',
@@ -620,8 +804,8 @@ import lsquestion from '@/components/zj_questionMaintenance/LSquestion.vue'
             } else {
               this.shortAnswerForm['createTime'] = Date.parse(new Date())
               this.shortAnswerForm['createUserID'] = this.$store.state.aId
-
-              this.reorganizeForm.examinationSubquestions.push(this.shortAnswerForm)  
+              // this.reorganizeForm.examinationSubquestions.push(this.shortAnswerForm)
+              this.getSon(this.shortAnswerForm)
             }
             this.shortAnswerForm = {
               questionBody: '',
@@ -629,8 +813,19 @@ import lsquestion from '@/components/zj_questionMaintenance/LSquestion.vue'
               questionAnalyze: ''
             }
         }
+        // 单选
         if(this.questionsTestingType !== '' && this.questionsTestingType == 'SINGLE_CHOICE'){
-        
+          if(this.radioChoiceForm.optionFileList){
+            for (let i = 0; i < this.radioChoiceForm.optionFileList.length; i++) {
+              if(!this.radioChoiceForm.optionFileList[i].name){
+                  this.$message({
+                    message: '选项填完',
+                    type: 'error'
+                  })
+                return
+              }
+            }
+          }
           if(this.radioChoiceForm.questionBody == '') {
               this.$message({
                 message: '题干不能为空',
@@ -691,7 +886,20 @@ import lsquestion from '@/components/zj_questionMaintenance/LSquestion.vue'
               this.radioChoiceForm['createUserID'] = this.$store.state.aId
 
               this.radioChoiceForm['createTime'] = Date.parse(new Date())
-              this.reorganizeForm.examinationSubquestions.push(this.radioChoiceForm)  
+              // this.reorganizeForm.examinationSubquestions.push(this.radioChoiceForm)  
+              // 添加单题接口（新）
+              var array = []
+              for(var i=0; i< this.radioChoiceForm.questionOption.length; i++){
+                  var str = ''
+                  str = this.radioChoiceForm.questionOption[i].key + '.' + this.radioChoiceForm.questionOption[i].value
+                  array.push(str)
+              }
+              this.radioChoiceForm.questionOption = array
+
+              // var str =  this.radioChoiceForm.questionAnswer
+              // this.radioChoiceForm.questionAnswer = str.join(',')
+              // 创建子试题接口
+              this.getSon(this.radioChoiceForm)
             }
             this.radioChoiceForm = {
               questionAnalyze: '',
@@ -735,7 +943,8 @@ import lsquestion from '@/components/zj_questionMaintenance/LSquestion.vue'
               this.discussForm['createUserID'] = this.$store.state.aId
 
               this.discussForm['createTime'] = Date.parse(new Date())
-              this.reorganizeForm.examinationSubquestions.push(this.discussForm)  
+              // this.reorganizeForm.examinationSubquestions.push(this.discussForm)
+              this.getSon(this.discussForm)
             }
             this.discussForm = {
               questionBody: '',
@@ -744,7 +953,6 @@ import lsquestion from '@/components/zj_questionMaintenance/LSquestion.vue'
               questionAnalyze: ''
             }
         }
-        this.questionsTestingType = ''
         // console.log(this.reorganizeForm)
       },
       radiochange(){
@@ -800,17 +1008,65 @@ import lsquestion from '@/components/zj_questionMaintenance/LSquestion.vue'
             })
           console.log(rows[index].id)
         } else {
-          rows.splice(index, 1);
+          this.$axiosResBody1('delete',this.$axiosURL.k_examinationQuestion + rows[index].id).then((res)=>{
+            rows.splice(index, 1);
+            this.reorganizeForm.subQuestionsId.splice(index, 1);
+          })
+
         }
       },
       editRow(index, rows) {
-        if (this.addOrDel !=='' || this.addOrDel !== undefined) {
+        if (this.addOrDel !== undefined) {
             // 调编辑接口
             this.ZHXQdialogVisible = true
             this.XQRows = rows[index]
         } else {
             this.ZHXQdialogVisible = true
-            this.XQRows = rows[index]
+            this.$axiosRes('get',this.$axiosURL.k_examinationQuestion+ '1/find/' + rows[index].id).then((res)=>{
+              if(res.eqBodyImageNameList){
+                res.eqBodyImageNameList1 = res.eqBodyImageNameList
+              }
+              if(res.eqOptionImageNameList){
+                res.eqOptionImageNameList1 = res.eqOptionImageNameList
+              }
+              // 选择选项内容
+              if(res.questionType == "MULTIPLE_CHOICE" || res.questionType == "SINGLE_CHOICE") {
+                var questionOptions = res.questionOption
+                res['questionOptions'] = questionOptions
+                var newquestionOption =[]
+                for (var i = 0; i < res.questionOptions.length; i++) {
+                  var obj = {}
+                  var xx = res.questionOptions[i].substr(0,1)
+                  var nr = res.questionOptions[i].substr(2,res.questionOptions[i].length)
+                  obj['key'] = xx
+                  obj['value'] = nr
+                  if(res.eqOptionImageNameList){
+                    obj['img'] = res.eqOptionImageNameList1[i]
+                  }
+                  newquestionOption.push(obj)
+                }
+                res.questionOption = newquestionOption
+              }
+
+              // 选择答案
+              if(res.questionType == "MULTIPLE_CHOICE") {
+                  res.questionAnswer = res.questionAnswer.split(",")
+              }
+
+              // 填空答案
+              if(res.questionType == "GAP_FILLING") {
+                var tkquestionAnswer = res.questionAnswer.split(",")
+                var tkquestionAnswerArr = []
+                for (var i = 0; i < tkquestionAnswer.length; i++) {
+                  var obj1 = {}
+                  obj1['value'] = tkquestionAnswer[i]
+                  tkquestionAnswerArr.push(obj1)
+                }
+                res.questionAnswer = tkquestionAnswerArr
+                // var tkquestionAnswerarr = []
+              }
+              this.XQRows = res
+            })
         }
       },
       // 修改详情
@@ -823,6 +1079,7 @@ import lsquestion from '@/components/zj_questionMaintenance/LSquestion.vue'
       },
       // 修改详情提交
       handleSubmitData(rows){
+        console.log(this.XQRows)
         if (rows.questionBody === '') {
           this.$message({
             message: '题干不能为空',
@@ -875,6 +1132,16 @@ import lsquestion from '@/components/zj_questionMaintenance/LSquestion.vue'
             })
           })
       }
-    }
+    },
+    beforeDestroy() {
+      // this.reorganizeForm.subQuestionsId = []
+      if(this.reorganizeForm.subQuestionsId.length> 0){
+        this.$axiosResBody1('delete',this.$axiosURL.k_examinationQuestion+ 'bash/delete',this.reorganizeForm.subQuestionsId).then((res)=>{
+          console.log(res)
+        })
+      }
+      this.$bus.$off('removeId')
+      this.$bus.$off('zhUploadFile')
+    },
 }
 </script>

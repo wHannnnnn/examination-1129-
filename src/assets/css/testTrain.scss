@@ -1,5 +1,9 @@
 @import "variable.scss";
 .testTrain{
+    .testUl{
+        overflow: auto;
+        display: flex
+    }
     .el-menu-item{
         font-size: 20px;
         padding: 0 70px;
@@ -7,11 +11,32 @@
     .el-menu--horizontal>.el-menu-item.is-active{
         @include inputcolor('2px')
     }
+    .el-form--inline .el-form-item{
+        width: 400px
+    }
+    .el-select,.el-cascader{
+        width: 320px;
+    }
+    .el-form--inline .el-form-item__label{
+        width: 80px
+    }
     .content-center{
         padding: 10px;
-        margin-top: 10px;
+        margin-top: 6px;
         overflow: hidden;
         @extend %boxshadow;
+        position: relative;
+        height: calc(100vh - 203px);
+        .testTrain_main{
+            overflow: auto;
+            height: calc(100vh - 370px);
+        }
+        .testTrain_bottom{
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background-color: #fff;
+        }
         .testTrain_main_queType,.testTrain_bottom_title{
             font-size: 20px;
             padding: 10px 0
@@ -49,9 +74,13 @@
             @extend %contentbgcolor;
             color: #fff
         }
+        .mockexam {
+            height: 100%
+        }
         // 模拟考试
         .mock_index{
-            height: calc(100vh - 220px);
+            // height: calc(100vh - 220px);
+            height: 100%
         }
         .mockexam_left{
             width: 20%;
@@ -75,7 +104,8 @@
           }
           .mockexam_right_title{
             text-align: left;
-            font-size: 26px;
+            font-size: 14px;
+            color: #FF9800;
           }
           .mockexam_right_ZSD{
             text-align: left;
@@ -91,7 +121,7 @@
           }
           .mockexam_right_ZSDname{
             text-align: center;
-            width: 93%;
+            width: 92%;
             height:40px;
             line-height: 40px;
             color: #adab4e;

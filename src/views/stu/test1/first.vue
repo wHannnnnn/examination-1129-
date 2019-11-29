@@ -72,24 +72,28 @@
         <el-button v-if='timeZT' type="primary"  :disabled='!checked || !timeZT'  @click='joinTset'>进入考试</el-button>
       </div>
     </div>
+    <div class="app_bottom">
+          <bottom/>
+    </div>
   </div>
 </template>
 
 <script>
 import impheader from '@/components/layout/header1'
+import bottom from "@/components/layout/bottom.vue"
 export default {
   components:{
-    impheader
+    impheader,bottom
   },
   data () {
     return {
       test:{
-        name:JSON.parse(sessionStorage.getItem('KSdata')).examName,
-        startTime:JSON.parse(sessionStorage.getItem('KSdata')).startTime,
-        endTime:JSON.parse(sessionStorage.getItem('KSdata')).endTime,
-        totalTime:JSON.parse(sessionStorage.getItem('KSdata')).totalTime,
-        examModality:JSON.parse(sessionStorage.getItem('KSdata')).examModality,
-        examType:JSON.parse(sessionStorage.getItem('KSdata')).examType,
+        name:JSON.parse(localStorage.getItem('KSdata')).examName,
+        startTime:JSON.parse(localStorage.getItem('KSdata')).startTime,
+        endTime:JSON.parse(localStorage.getItem('KSdata')).endTime,
+        totalTime:JSON.parse(localStorage.getItem('KSdata')).totalTime,
+        examModality:JSON.parse(localStorage.getItem('KSdata')).examModality,
+        examType:JSON.parse(localStorage.getItem('KSdata')).examType,
       },
       student:{
         url:require('@/assets/img/touxiang.jpg'),
@@ -103,23 +107,23 @@ export default {
       time:'',
       checked:false,  //已读选中
       timeZT:false,  //倒计时是否完成
-      KSdata : JSON.parse(sessionStorage.getItem('KSdata'))
+      KSdata : JSON.parse(localStorage.getItem('KSdata'))
     }
   },
 
   methods: {
     joinTset:function(){
-      if (JSON.parse(sessionStorage.getItem('KSdata')).examType == '水平考试') {
+      if (JSON.parse(localStorage.getItem('KSdata')).examType == '水平考试') {
         this.$router.push({path:'/test_test'})
-      } else if(JSON.parse(sessionStorage.getItem('KSdata')).examType == '过关考试') {
+      } else if(JSON.parse(localStorage.getItem('KSdata')).examType == '过关考试') {
         this.$router.push({path:'/test_test'})
-      }else if(JSON.parse(sessionStorage.getItem('KSdata')).examType == '等级考试') {
+      }else if(JSON.parse(localStorage.getItem('KSdata')).examType == '等级考试') {
         this.$router.push({path:'/test_test'})
       }
       
     },
      initData:function(){
-        this.$axiosStuRes('get',this.$axiosURL.u_user+ 'users/byTicket',{ticket: sessionStorage.getItem('ticket')}).then((res)=>{
+        this.$axiosStuRes('get',this.$axiosURL.u_user+ 'users/byTicket',{ticket: localStorage.getItem('ticket')}).then((res)=>{
           console.log(res);
           this.student.nickname = res.nickname
           this.student.sex = res.sex
@@ -130,13 +134,13 @@ export default {
         })
 
         //倒计时
-        var startTime = new Date(JSON.parse(sessionStorage.getItem('KSdata')).startTime).getTime()
-        var endTime = new Date(JSON.parse(sessionStorage.getItem('KSdata')).endTime).getTime()
-        //var totalTime = JSON.parse(sessionStorage.getItem('KSdata')).endTime * 60*1000
-        var serverTime = new Date(JSON.parse(sessionStorage.getItem('KSdata')).serverTime).getTime()
+        var startTime = new Date(JSON.parse(localStorage.getItem('KSdata')).startTime).getTime()
+        var endTime = new Date(JSON.parse(localStorage.getItem('KSdata')).endTime).getTime()
+        //var totalTime = JSON.parse(localStorage.getItem('KSdata')).endTime * 60*1000
+        var serverTime = new Date(JSON.parse(localStorage.getItem('KSdata')).serverTime).getTime()
         //是否已结束
         
-        console.log(11,JSON.parse(sessionStorage.getItem('KSdata')));
+        console.log(11,JSON.parse(localStorage.getItem('KSdata')));
         console.log(22,serverTime);
         if (startTime && serverTime) {
           var isOver = serverTime-endTime<= 0 ? false:true

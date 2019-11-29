@@ -2,15 +2,15 @@
     <el-row style="width:100%">
 
         <div class="header-left">
-            <el-col :span="5">
+            <el-col :span="6">
                 <div class="grid-content bg-purple">
-                    <span class="title" @click="index">考核筹划分系统</span>
+                    <span class="title" @click="index" style="cursor:pointer;padding: 0 10px;">综合训练考核系统</span>
                 </div>
             </el-col>
         </div>
 
         <div class="header-center">
-            <el-col :span="12">
+            <el-col :span="11" style="color: #fff0;">
                 a
             </el-col>
         </div>
@@ -26,7 +26,6 @@
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item>默认</el-dropdown-item>
                             <el-dropdown-item command="theme1">背景一</el-dropdown-item>
-                            <el-dropdown-item command="theme2">背景二</el-dropdown-item>
                         </el-dropdown-menu>
                 </el-dropdown>
                 <el-dropdown trigger="click">
@@ -77,10 +76,10 @@ export default {
                 cancelButtonText: '取消',
                 type: 'success'
             }).then(() => {
-                sessionStorage.removeItem('access_token')
-                sessionStorage.removeItem('loginUser')
-                sessionStorage.removeItem('role')
-                sessionStorage.removeItem('aId')
+                localStorage.removeItem('access_token')
+                localStorage.removeItem('loginUser')
+                localStorage.removeItem('role')
+                localStorage.removeItem('aId')
                 this.$store.state.access_token = null
                 this.$store.state.loginUser = null
                 this.$store.state.role = null

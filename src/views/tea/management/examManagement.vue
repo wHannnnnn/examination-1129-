@@ -45,7 +45,6 @@
         :data="tableData"
         border
         style="width: 100%"
-        max-height="490"
         @selection-change="handleSelectionChange"
         size='mini'>
         <el-table-column
@@ -99,6 +98,7 @@
               :disabled="scope.row.examState !='未发布' "
               @click="handleRemove(scope.$index, scope.row)">删除
             </el-button>
+            <br>
             <el-button
               size="small"
               type="default"
@@ -112,6 +112,13 @@
               v-if="scope.row.examState =='结束' "
               @click="downSJ(scope.row)">
               导出学生试卷
+            </el-button>
+            <el-button
+              size="small"
+              type="default"
+              v-if="scope.row.examState =='结束' "
+              @click="downCJ(scope.row)">
+              导出考试成绩
             </el-button>
           </template>
         </el-table-column>
@@ -254,13 +261,25 @@
                     <div style="overflow: hidden">
                        <el-col>
                           <el-form-item label="题干: ">
-                            <b>{{details.questionBody}}</b>({{details.singleScore}}分)
+                            <b>{{details.questionBody}}</b>
+                            <img
+                              v-for="(src,index) in details.eqBodyImageNameList"
+                              :src="getImgUrl(src)"
+                              :key="index"
+                            >
+                            ({{details.singleScore}}分)
                           </el-form-item>
                         </el-col>
 
                         <el-col v-if="details.questionOption">
                           <el-form-item label="选项内容: ">
-                            <p v-for="item2 in details.questionOption.split(';')"><span>{{item2.split(';')[0]}}</span> &nbsp;&nbsp;<b>{{item2.split(';')[1]}}</b></p>
+                            <p v-for="(item2,index) in details.questionOption"> &nbsp;&nbsp;
+                              <b>{{item2}}</b>
+                              <img
+                                  :src="getImgUrl(details.eqOptionImageNameList[index])" 
+                                  :key="index"
+                                >
+                            </p>
                           </el-form-item>
                         </el-col>
 
@@ -430,9 +449,12 @@ export default {
       },
     },
   created(){
-    this.dictionarys = JSON.parse(sessionStorage.getItem('dictionarys'))
+    this.dictionarys = JSON.parse(localStorage.getItem('dictionarys'))
   },
   methods: {
+    getImgUrl:function(url){
+      return this.$imgThumbUrl + url
+    },
     wordDownload:function(index,row){
 
       this.$axiosDownload(this.$axiosURL.e_examination+'exportTickets',{examId:row.id}).then((res)=>{
@@ -477,6 +499,10 @@ export default {
       
       
     },
+    downCJ(row){
+        var url = this.$axiosURL.e_examination + 'exportScoreReport?examId=' + row.id
+        window.location.href = url
+    },
     handleLook:function(index,row){
         
         this.dialogVisibleXQ = true
@@ -503,7 +529,7 @@ export default {
           KSXS:row.examModality,
           CKRS:row.students.length,
           KSZT:row.examState,
-          SJMF:row.papers[0].paper.totalScore,
+          SJMF:row.papers[row.papers.length-1].paper.totalScore,
           KSSC:row.totalTime,
           KSRQ:row.startTime,
           PSRY:judgeTeacher,
@@ -511,11 +537,12 @@ export default {
           CKRY:students,
         }
 
-        this.CTZJdata = row.papers[0].paper.ctzj?JSON.parse(row.papers[0].paper.ctzj):[]
-        this.SJZJdata = row.papers[0].paper.sjzj?JSON.parse(row.papers[0].paper.sjzj):[]
+        this.CTZJdata = row.papers[row.papers.length-1].paper.ctzj?JSON.parse(row.papers[row.papers.length-1].paper.ctzj):[]
+        this.SJZJdata = row.papers[row.papers.length-1].paper.sjzj?JSON.parse(row.papers[row.papers.length-1].paper.sjzj):[]
         this.XTandRGdata = []
-        if (row.papers[0].paper.xtzj) {
-          JSON.parse(row.papers[0].paper.xtzj).forEach((element, index)=> {
+        console.log(row,9889898)
+        if (row.papers[row.papers.length-1].paper.xtzj) {
+          JSON.parse(row.papers[row.papers.length-1].paper.xtzj).forEach((element, index)=> {
             this.XTandRGdata.push(element)
           });
         }
@@ -638,7 +665,7 @@ export default {
   }
 }
 </script>
-<style >
+<style scoped>
   .el-tag {
     background-color: transparent;
     border: none;

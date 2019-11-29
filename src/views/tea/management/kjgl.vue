@@ -1,6 +1,6 @@
 <template>
   <div class="teatable">
-    <div style="margin-top: 20px">
+    <div style="margin: 10px">
         <el-form :inline="true" :model="formInline" class="demo-form-inline" size="mini">
           <!-- 关键字 -->
           <el-form-item v-show="qiehuan == true">
@@ -74,24 +74,42 @@
         </el-table-column>
         <el-table-column label="图片" width="100">
           <template slot-scope="scope">
-            <img :src="imgSrc(scope.row)" style="width: 100%;height:100%">
+            <img :src="imgSrc(scope.row.sourceAsMap?scope.row.sourceAsMap:scope.row)" style="width: 100%;height:100%">
           </template>
         </el-table-column>
-        <el-table-column prop="fileTitle" label="标题" >
+        <el-table-column label="标题" >
+          <template slot-scope="scope">
+            {{scope.row.sourceAsMap?scope.row.sourceAsMap.fileTitle:scope.row.fileTitle}}
+          </template>
         </el-table-column>
-        <el-table-column prop="summary" label="内容" >
-        </el-table-column>
+        <!-- <el-table-column prop="summary" label="内容" >
+        </el-table-column> -->
         <el-table-column prop="ZSDname" label="知识分类" v-if='columnIsShow(1)'>
         </el-table-column>
-        <el-table-column  prop="uploadTimes"  label="上传时间" v-if='columnIsShow(2)'>
+        <el-table-column label="上传时间" v-if='columnIsShow(2)'>
+          <template slot-scope="scope">
+            {{UTCtoDate(scope.row.sourceAsMap?scope.row.sourceAsMap.updateTime:scope.row.updateTime)}}
+          </template> 
         </el-table-column>
-        <el-table-column  prop="downloadNum"  label="下载量" v-if='columnIsShow(3)'>
+        <el-table-column label="下载量" v-if='columnIsShow(3)'>
+          <template slot-scope="scope">
+            {{scope.row.sourceAsMap?scope.row.sourceAsMap.downloadNum:scope.row.downloadNum}}
+          </template>
         </el-table-column>
-        <el-table-column  prop="browsingNum"  label="浏览量" v-if='columnIsShow(4)'>
+        <el-table-column  label="浏览量" v-if='columnIsShow(4)'>
+          <template slot-scope="scope">
+            {{scope.row.sourceAsMap?scope.row.sourceAsMap.browsingNum:scope.row.browsingNum}}
+          </template>
         </el-table-column>
-        <el-table-column  prop="collectionNum"  label="收藏次数" v-if='columnIsShow(5)'>
+        <el-table-column  label="收藏次数" v-if='columnIsShow(5)'>
+          <template slot-scope="scope">
+            {{scope.row.sourceAsMap?scope.row.sourceAsMap.collectionNum:scope.row.collectionNum}}
+          </template>
         </el-table-column>
-        <el-table-column  prop="fileTypeName"  label="文件类型" v-if='columnIsShow(6)'>
+        <el-table-column  label="文件类型" v-if='columnIsShow(6)'>
+          <template slot-scope="scope">
+            {{filetypeName(scope.row.sourceAsMap?scope.row.sourceAsMap.fileType:scope.row.fileType)}}
+          </template> 
         </el-table-column>
         <el-table-column  prop="userName"  label="上传人" v-if='columnIsShow(7)'>
         </el-table-column>
@@ -171,7 +189,6 @@
               :show-file-list="false"
               :on-remove="handleRemove"
               :on-change="headChange"
-              multiple
               accept=".jpg,.jpeg,.png,.gif,.doc,.docx,.pdf,.mp3"
               :file-list="files">
                 <el-button size="small" type="primary">添加文件</el-button>
@@ -280,8 +297,8 @@ export default {
       }     
   },
   methods: {
-    getSessionStorage:function() {
-      this.myHeaders.Authorization = 'Bearer '+ sessionStorage.getItem('access_token')
+    getlocalStorage:function() {
+      this.myHeaders.Authorization = 'Bearer '+ localStorage.getItem('access_token')
     },
     // 全选
     handleCheckAllChange(val){
@@ -331,78 +348,81 @@ export default {
       this.changeSelect = val
     },
     imgSrc: function (item) {
-      if (item.fileType == 0) {
-        return this.wordImg
+      if (item.fileType == 0 ||item.fileType == 2) {
+        return  this.$BASEURL + item.videoImg
       } else if (item.fileType == 1) {
-        return item.onlinePath ? this.$BASEURL + item.onlinePath : this.pictureImg
+        return this.$BASEURL + item.onlinePath
       } else if (item.fileType == 3) {
-        return item.videoImg ? this.$BASEURL + item.videoImg : this.videoImg
+        return this.$BASEURL + item.videoImg
       }
     },
-    kjglSearch() {
-      console.log(this.formInline)
-      if(this.XZknowPoints.length > 1) {
-        var params = {
-              pageNum:  this.pageNum,
-              pageSize: this.pageSize,
-              fileTitle: this.formInline.KJMC,
-              kpointId: this.XZknowPoints[this.XZknowPoints.length - 1],
-              fileType: this.formInline.WJLX,
-              firTime: this.formInline.RQ?this.formInline.RQ[0]:'',
-              endTime: this.formInline.RQ?this.formInline.RQ[1]:''
-
-        }
-      } else if(this.XZknowPoints.length == 1) {
-        var params = {
-              pageNum:  this.pageNum,
-              pageSize: this.pageSize,
-              fileTitle: this.formInline.KJMC,
-              subjectId:this.XZknowPoints[0],
-              fileType: this.formInline.WJLX,
-              firTime: this.formInline.RQ?this.formInline.RQ[0]:'',
-              endTime: this.formInline.RQ?this.formInline.RQ[1]:''
-
-        }
-      } else {
-        var params = {
-              pageNum: this.pageNum,
-              pageSize: this.pageSize,
-              fileTitle: this.formInline.KJMC,
-              fileType: this.formInline.WJLX,
-              firTime: this.formInline.RQ?this.formInline.RQ[0]:'',
-              endTime: this.formInline.RQ?this.formInline.RQ[1]:''
-
-        }
+    filetypeName(type){
+      if (type == 0) {
+        return '文档'
+      } else if (type == 1) {
+        return '图片'
+      } else if (type == 2) {
+        return '音频'
+      } else if (type == 3) {
+        return '视频'
       }
-
+    },
+    UTCtoDate:function(date){
+        return this.$tools.UTCtoDate(date)
+    },
+    kjglSearch() {
+      if(this.qiehuan == false){
+        this.formInline.CXGJZ = ''
+      }
       if(this.formInline.CXGJZ == '') {
-        var gjc = "null"
+        var gjc = 'null'
+        var params = {
+          data:{
+            pageNum:  this.pageNum,
+            pageSize: this.pageSize,
+            fileTitle: this.formInline.KJMC,
+            kpointId: this.XZknowPoints[this.XZknowPoints.length - 1],
+            fileType: this.formInline.WJLX,
+            firTime: this.formInline.RQ?this.formInline.RQ[0]:'',
+            endTime: this.formInline.RQ?this.formInline.RQ[1]:''
+          }
+        }
       } else {
         var gjc = this.formInline.CXGJZ.trim()
+        var params = {
+            currentPageNum:  this.pageNum,
+            perPageNum: this.pageSize,
+        }
       }
       var a = []
-      this.$axiosResBody('post', this.$axiosURL.f_file + 'list/' + gjc, params).then((res) => {
-        this.total = res.total
-        if (res.data !== null) {
-          this.kjglList = res.data
-          console.log(res.data);
+      this.$axiosResBody('post', this.$axiosURL.Fr_es + 'anon/find/fileinfo/' + gjc, params).then((res) => {
+        this.total = res.totalNum
+        if(res.dataList == null){
+          return res.searchHits
         } else {
-          this.kjglList = []
+           return res.dataList
         }
-      }).then(() => {
-        this.kjglList.forEach((element, index) => {
-          this.$axiosRes1('get', this.$axiosURL.K_neoUser + element.userId + '/find', {}).then((res) => {
-            element['userName'] = res.name
-          }).then(() => {
-            this.$axiosRes1('get', this.$axiosURL.K_knowledgePoint + element.kpointId, {}).then((res) => {
-              element['ZSDname'] = res.name
+      }).then((data) => {
+        if(data == null){
+          a= []
+        } else {
+          data.forEach((element, index) => {
+            var userid= element.userId?element.userId:element.sourceAsMap.userId
+            this.$axiosRes1('get', this.$axiosURL.K_neoUser + userid + '/find', {}).then((res) => {
+              element['userName'] = res.name
             }).then(() => {
-              a.push(element)
+              var pointid = element.kpointId?element.kpointId:element.sourceAsMap.kpointId
+              this.$axiosRes1('get', this.$axiosURL.K_knowledgePoint + pointid, {}).then((res) => {
+                element['ZSDname'] = res.name
+              }).then(() => {
+                a.push(element)
+              })
             })
-          })
-        });
-      }).then(() => {
-        this.kjglList = a
+          });
+        }
+        return a
+      }).then((data) => {
+        this.kjglList = data
       })
     },
           // 时间转换
@@ -520,10 +540,10 @@ export default {
             message: '文件已存在',
             type: 'warning'
           })
+          this.$loading().close()
           return     
         }else{
           this.$loading().close()
-          console.log(res,565656)
           file.keyword = ''
           file.fileTitle = ''
           file.readType = ''
@@ -638,7 +658,7 @@ export default {
   },
   mounted:function(){
 
-   this.getSessionStorage()
+   this.getlocalStorage()
     
     this.kjglSearch()
     this.$axiosRes('get',this.$axiosURL.k_knowledgeHierachy+ '0/all',{}).then((res)=>{
@@ -694,14 +714,14 @@ export default {
                 console.log('file.uid: ',file.uid);
                 var chunks = chunkSize ? Math.ceil( file.source.size / chunkSize ) : 1;
                 //进行md5判断
-                console.log(sessionStorage.getItem('access_token'),999999999999)
+                console.log(localStorage.getItem('access_token'),999999999999)
                 // $.ajax({
                 //   url: _this.$axiosURL.f_upload + 'check-md5',
                 //   type: 'post',
                 //   dataType: 'json',
                 //   data: {chunks: chunks, md5: file.md5},
                 //   headers: {
-                //     // "Authorization": 'Bearer '+ sessionStorage.getItem('access_token'),
+                //     // "Authorization": 'Bearer '+ localStorage.getItem('access_token'),
                 //     // 'Content-Type': 'application/json'
                 //   },
                 //   // contenttype: 'application/json',
@@ -748,6 +768,7 @@ export default {
                               type: 'warning',
                               message: '文件已存在'
                             });
+                            _this.$loading().close()
                         } else if (status == 102) {
                             // 部分已经上传到服务器了，但是差几个模块。
                             file.missChunks = data.data.data;
@@ -839,7 +860,7 @@ export default {
     };
     // uploader.on('uploadBeforeSend', function (obj, data, headers) {
     //   headers = $.extend(headers,{
-    //     // "Authorization": 'Bearer '+ sessionStorage.getItem('access_token'),
+    //     // "Authorization": 'Bearer '+ localStorage.getItem('access_token'),
     //     'Content-Type': 'multipart/form-data'
     //   })
     // });
@@ -856,8 +877,6 @@ export default {
         // $('#' + file.id).find('p.state').text(text);
         // XXXX
         this.$loading().close()
-        console.log(typeof(file),338)
-        console.log(file.name,338)
         var obj = {}
         obj.name = file.name
         obj.keyword = ''

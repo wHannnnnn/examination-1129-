@@ -820,8 +820,8 @@ export default {
         reorganizeForm: {
           questionBody: '',
           examinationSubquestions: [
-          ]
-
+          ],
+          subQuestionsId: []
         },
         //  简答题数据
         shortAnswerForm: {
@@ -2004,11 +2004,9 @@ export default {
       }
     },
     handleSubmitData(formName){
-        console.log(formName,3434343)
         if(formName.optionFileList){
           for (let i = 0; i < formName.optionFileList.length; i++) {
             if(!formName.optionFileList[i].name){
-                console.log(formName.optionFileList[i],77766);
                 this.$message({
                   message: '选项填完',
                   type: 'error'
@@ -2042,59 +2040,59 @@ export default {
             }
 
             // 综合题部分校验
-            if(formName.examinationSubquestions) {
-              if(formName.examinationSubquestions.length <= 0) {
-              this.$message({
-                message: '请先添加试题',
-                type: 'error'
-              })
-              return
-              }
+            // if(formName.examinationSubquestions) {
+            //   if(formName.examinationSubquestions.length <= 0) {
+            //   this.$message({
+            //     message: '请先添加试题',
+            //     type: 'error'
+            //   })
+            //   return
+            //   }
 
-              for (var i = 0; i < formName.examinationSubquestions.length; i++) {
-                // 综合题下的选择题 选项数据类型转换
-                if(formName.examinationSubquestions[i].questionType == "MULTIPLE_CHOICE" || formName.examinationSubquestions[i].questionType == "SINGLE_CHOICE") {
-                  var array = []
-                  for(var j=0; j< formName.examinationSubquestions[i].questionOption.length; j++){
-                      // for( var k in formName.examinationSubquestions[i].questionOption[i]){
-                      //   var str = ''
-                      //   str = str + formName.examinationSubquestions[i].questionOption[i][k] + '.' + i
-                      // }
-                      // console.log(str)
-                      var str = ''
-                      str = formName.examinationSubquestions[i].questionOption[j].key + '.' + formName.examinationSubquestions[i].questionOption[j].value
-                      array.push(str)
-                  }
-                  array.join(',')
-                  formName.examinationSubquestions[i].questionOption = array.join(';')
-                }
+            //   for (var i = 0; i < formName.examinationSubquestions.length; i++) {
+            //     // 综合题下的选择题 选项数据类型转换
+            //     if(formName.examinationSubquestions[i].questionType == "MULTIPLE_CHOICE" || formName.examinationSubquestions[i].questionType == "SINGLE_CHOICE") {
+            //       var array = []
+            //       for(var j=0; j< formName.examinationSubquestions[i].questionOption.length; j++){
+            //           // for( var k in formName.examinationSubquestions[i].questionOption[i]){
+            //           //   var str = ''
+            //           //   str = str + formName.examinationSubquestions[i].questionOption[i][k] + '.' + i
+            //           // }
+            //           // console.log(str)
+            //           var str = ''
+            //           str = formName.examinationSubquestions[i].questionOption[j].key + '.' + formName.examinationSubquestions[i].questionOption[j].value
+            //           array.push(str)
+            //       }
+            //       array.join(',')
+            //       formName.examinationSubquestions[i].questionOption = array.join(';')
+            //     }
 
-                if(formName.examinationSubquestions[i].questionType == "MULTIPLE_CHOICE") {
-                    var str =  formName.examinationSubquestions[i].questionAnswer
-                    formName.examinationSubquestions[i].questionAnswer = str.join(',')
-                }
+            //     if(formName.examinationSubquestions[i].questionType == "MULTIPLE_CHOICE") {
+            //         var str =  formName.examinationSubquestions[i].questionAnswer
+            //         formName.examinationSubquestions[i].questionAnswer = str.join(',')
+            //     }
 
-                // 综合题下的填空题数据转换
-                if(formName.examinationSubquestions[i].questionType == "GAP_FILLING") {
-                  var arr = []
-                  for(var k=0; k< formName.examinationSubquestions[i].questionAnswer.length; k++){
-                    if ((formName.examinationSubquestions[i].questionAnswer[k].value === '')) {
-                        this.$message({
-                          message: '答案不能为空',
-                          type: 'error'
-                        })
-                        return
-                    } else {
-                        arr.push(formName.examinationSubquestions[i].questionAnswer[k].value)
-                    }
-                  }
-                  formName.examinationSubquestions[i].questionAnswer = arr
-                  formName.examinationSubquestions[i].questionAnswer = formName.examinationSubquestions[i].questionAnswer.join(',')
+            //     // 综合题下的填空题数据转换
+            //     // if(formName.examinationSubquestions[i].questionType == "GAP_FILLING") {
+            //     //   var arr = []
+            //     //   for(var k=0; k< formName.examinationSubquestions[i].questionAnswer.length; k++){
+            //     //     if ((formName.examinationSubquestions[i].questionAnswer[k].value === '')) {
+            //     //         this.$message({
+            //     //           message: '答案不能为空',
+            //     //           type: 'error'
+            //     //         })
+            //     //         return
+            //     //     } else {
+            //     //         arr.push(formName.examinationSubquestions[i].questionAnswer[k].value)
+            //     //     }
+            //     //   }
+            //     //   formName.examinationSubquestions[i].questionAnswer = arr
+            //     //   formName.examinationSubquestions[i].questionAnswer = formName.examinationSubquestions[i].questionAnswer.join(',')
 
-                }
+            //     // }
 
-              }
-            }
+            //   }
+            // }
 
             if (formName.questionOption && formName.questionOption instanceof Array) {
               for (var i = 0; i < formName.questionOption.length; i++) {
@@ -2176,38 +2174,71 @@ export default {
             // 选择题题干数据类型转换
             if(params.examinationQuestion.questionType == "MULTIPLE_CHOICE" || params.examinationQuestion.questionType == "SINGLE_CHOICE") {
               var array = []
-              console.log(params.examinationQuestion.questionOption,999)
               for(var i=0; i< params.examinationQuestion.questionOption.length; i++){
                   var str = ''
                   str = params.examinationQuestion.questionOption[i].key + '.' + params.examinationQuestion.questionOption[i].value
                   array.push(str)
               }
-              console.log(array,888)
               params.examinationQuestion.questionOption = array
             }
 
             params.examinationQuestion.createTime = Date.parse(new Date())
-            this.$axiosResBody1('post',this.$axiosURL.k_examinationQuestion+ 'save/andRefersTo',params).then((res)=>{
-                // 上传图片
-                this.$bus.$emit('uploadFile','')
-                this.$confirm('创建成功', {
-                  confirmButtonText: '继续创建',
-                  cancelButtonText: '查看创建结果',
-                  type: 'success',
-                  center: true
-                }).then(() => {
-                  this.directoryCreate.questionsTestingType = ''
-                         //  手动  重置    待写
-                  this.resetQuestionData()
-                }).catch(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '请在此页面查阅创建结果'
-                  })
-                  this.$bus.$emit('onclick','')
-                })
+            if(params.examinationQuestion.questionType == "COMPREHENSIVE"){
+              params.examinationQuestion.examinationSubquestions = []
+                this.$axiosResBody1('post',this.$axiosURL.k_examinationQuestion+ 'save/andRefersTo',params).then((res)=>{
+                    // 上传图片
+                    console.log(res.id)
+                    var returnparams = {
+                      parentQuestionId: res.id,
+                      subQuestionsId: params.examinationQuestion.subQuestionsId
+                    }
+                    this.$axiosResBody1('post',this.$axiosURL.k_examinationQuestion+ 'bash/establish/comprehensive/has/subQuestion',returnparams).then((res)=>{
+                      this.$bus.$emit('removeId','')
+                    })
 
-            })
+                    this.$bus.$emit('zhUploadFile',res.id)
+
+                    this.$confirm('创建成功', {
+                      confirmButtonText: '继续创建',
+                      cancelButtonText: '查看创建结果',
+                      type: 'success',
+                      center: true
+                    }).then(() => {
+                      this.directoryCreate.questionsTestingType = ''
+                             //  手动  重置    待写
+                      this.resetQuestionData()
+                    }).catch(() => {
+                      this.$message({
+                        type: 'success',
+                        message: '请在此页面查阅创建结果'
+                      })
+                      this.$bus.$emit('onclick','')
+                    })
+    
+                })
+            } else {
+                this.$axiosResBody1('post',this.$axiosURL.k_examinationQuestion+ 'save/andRefersTo',params).then((res)=>{
+                    // 上传图片
+                    this.$bus.$emit('stUploadFile',res.id)
+                    this.$confirm('创建成功', {
+                      confirmButtonText: '继续创建',
+                      cancelButtonText: '查看创建结果',
+                      type: 'success',
+                      center: true
+                    }).then(() => {
+                      this.directoryCreate.questionsTestingType = ''
+                             //  手动  重置    待写
+                      this.resetQuestionData()
+                    }).catch(() => {
+                      this.$message({
+                        type: 'success',
+                        message: '请在此页面查阅创建结果'
+                      })
+                      this.$bus.$emit('onclick','')
+                    })
+    
+                })
+            }
             // 上传文件接口          
           } else {
             console.log('error submit!!');
@@ -2254,8 +2285,8 @@ export default {
         this.reorganizeForm = {
           questionBody: '',
           examinationSubquestions: [
-          ]
-
+          ],
+          subQuestionsId: []
         }
         //  简答题数据
         this.shortAnswerForm = {
@@ -2268,7 +2299,7 @@ export default {
     timestampToTime(timestamp){
       var date = new Date(timestamp)
       var Y = date.getFullYear() + '-'
-      var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.date.getMonth() + 1) + '-'
+      var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-'
       var D = date.getDate() + ' '
       var h = date.getHours() + ':'
       var m = date.getMinutes() + ':'

@@ -45,7 +45,7 @@
           </el-card>
         </el-col>
          <el-col :span="12">
-          <el-card class="box-card change">
+          <el-card class="box-card">
             <div slot="header" class="clearfix">
               <span>{{questionType}}</span>
             </div>
@@ -55,7 +55,7 @@
                   <div class="queTG">第{{index+1}}题 ({{item.singleScore}}分)、{{item.questionBody}}</div>
 
                   <div v-if="questionType == '单选题'">
-                    <div class="XZTOption" v-for="item1 in item.questionOption.split(';')">
+                    <div class="XZTOption" v-for="item1 in item.questionOption">
                       <div :class="DXTchoiceAnswer(item1,item.questionAnswer)?'redClass':''">{{item1}}</div>
                     </div>
                     <div>
@@ -67,7 +67,7 @@
                   </div>
 
                   <div v-if="questionType == '多选题'">
-                    <div class="XZTOption" v-for="item1 in item.questionOption.split(';')">
+                    <div class="XZTOption" v-for="item1 in item.questionOption">
                       <div :class="DUOXTchoiceAnswer(item1,item.questionAnswer)?'redClass':''">{{item1}}</div>
                     </div>
                     <div>
@@ -91,7 +91,7 @@
                   </div>
 
                   <div v-if="questionType == '判断题'">
-                    <div class="XZTOption" v-for="item1 in item.questionOption.split(';')">
+                    <div class="XZTOption" v-for="item1 in item.questionOption">
                       <div :class="PDTchoiceAnswer(item1,item.questionAnswer)?'redClass':''">{{item1}}</div>
                     </div>
                     <div>

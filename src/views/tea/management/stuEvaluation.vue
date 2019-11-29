@@ -51,7 +51,6 @@
         :data="tableData"
         border
         style="width: 100%"
-        max-height="490"
         size='mini'>
         <el-table-column prop="headImgUrl" label="头像" :key="Math.random()" v-if='columnIsShow(1)'>
            <template slot-scope="scope">

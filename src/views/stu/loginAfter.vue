@@ -58,12 +58,12 @@ export default {
     },
     clickZSD:function(item){
       if (this.isZSD(item)) {
-        this.$axiosStuResBody('delete',this.$axiosURL.K_neoUser+'bash/cancel/subscribedPoints/for/'+sessionStorage.getItem('student_aId'),[item.kpId]).then((res)=>{
+        this.$axiosStuResBody('delete',this.$axiosURL.K_neoUser+'bash/cancel/subscribedPoints/for/'+localStorage.getItem('student_aId'),[item.kpId]).then((res)=>{
         }).then(()=>{
           this.nowknowledge()
         })
       } else {
-        this.$axiosStuResBody('post',this.$axiosURL.K_neoUser+'bash/subscribePoints/for/'+sessionStorage.getItem('student_aId'),[item.kpId]).then((res)=>{
+        this.$axiosStuResBody('post',this.$axiosURL.K_neoUser+'bash/subscribePoints/for/'+localStorage.getItem('student_aId'),[item.kpId]).then((res)=>{
         }).then(()=>{
           this.nowknowledge()
         })
@@ -81,13 +81,13 @@ export default {
       this.nowknowledge()
     },
     nowknowledge:function(){
-      this.$axiosStuRes1('get',this.$axiosURL.K_neoUser+sessionStorage.getItem('student_aId')+'/all/subscribedPoints',{}).then((res)=>{
+      this.$axiosStuRes1('get',this.$axiosURL.K_neoUser+localStorage.getItem('student_aId')+'/all/subscribedPoints',{}).then((res)=>{
         this.subscribedPoints = res
       })
     },
   },
   created:function(){
-    this.$store.state.student_loginUser=JSON.parse(sessionStorage.getItem('student_loginUser'))
+    this.$store.state.student_loginUser=JSON.parse(localStorage.getItem('student_loginUser'))
     console.log(this.$store.state.student_loginUser);
   },
   mounted:function(){

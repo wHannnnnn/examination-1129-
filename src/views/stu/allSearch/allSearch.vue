@@ -125,7 +125,7 @@ export default {
   props: ['searchValue'],
   methods: {
     clickZL:function(item){
-      sessionStorage.setItem('LSKJ',JSON.stringify(item))
+      localStorage.setItem('LSKJ',JSON.stringify(item))
       const route = this.$router.resolve({name:'classRoom'})
       window.open(route.href,'_blank',)
     },
@@ -146,24 +146,14 @@ export default {
                 var params = {
                     currentPageNum: this.pageNum,
                     perPageNum: this.pageSize,
-                    text:  this.allsearchValue
+                    text:  this.allsearchValue,
+                    flag: null
                 }
                 this.$axiosStuRes('get',this.$axiosURL.Fr_es + 'anon/find/all',params).then((res)=>{
-                    // console.log(res.searchHits)
                     for (let i = 0; i < res.searchHits.length; i++) {
-                        // console.log(res.searchHits[i].sourceAsMap)
-                        // console.log(res.highlightResults[i][0])
                         for (const key in res.highlightResults[i][0]) {
-                            // console.log(key)
                             if(res.searchHits[i].sourceAsMap.hasOwnProperty(key)) {
-                                // if(res.highlightResults[i][0][key].length <= 100){
-                                    res.searchHits[i].sourceAsMap[key] = res.highlightResults[i][0][key]
-                                // }
-                                // if(res.highlightResults[i][0][key].length > 100){
-                                //     console.log(res.searchHits[i].sourceAsMap[key],999)
-                                // }
-                                // console.log(res.searchHits[i].sourceAsMap[key])
-                                // console.log(res.highlightResults[i][0][key])
+                                res.searchHits[i].sourceAsMap[key] = res.highlightResults[i][0][key]
                             }
                         }
                     }

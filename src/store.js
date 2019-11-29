@@ -4,10 +4,10 @@ import Vuex from "vuex";
 Vue.use(Vuex);
 const state = {
 	login:false,
-	access_token: sessionStorage.getItem('access_token') ? sessionStorage.getItem('access_token') : null,
-	role: sessionStorage.getItem('role') ? sessionStorage.getItem('role') : null,
-	aId: sessionStorage.getItem('aId') ? sessionStorage.getItem('aId') : null,
-	loginUser: sessionStorage.getItem('loginUser') ? JSON.parse(sessionStorage.getItem('loginUser')) : null,
+	access_token: localStorage.getItem('access_token') ? localStorage.getItem('access_token') : null,
+	role: localStorage.getItem('role') ? localStorage.getItem('role') : null,
+	aId: localStorage.getItem('aId') ? localStorage.getItem('aId') : null,
+	loginUser: localStorage.getItem('loginUser') ? JSON.parse(localStorage.getItem('loginUser')) : null,
 	dictionarys:null, //登陆获取字典数据
 	knowledgeHierachy:[], //知识点
 	addSJ:{

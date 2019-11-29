@@ -550,22 +550,16 @@ export default {
         })
 
         //获取所有试卷列表
-		var a = this.$store.state.dictionarys.paper_type.find((item)=>(item.dictName=='普通试卷'))
-	    var param ={
-	      //paperType:a.value,
-	      //rel:true
-	    }
-	    this.$axiosResBody('get',this.$axiosURL.e_examinationPaper+'findOptionalPapers',param).then((res)=>{
+	    this.$axiosResBody('get',this.$axiosURL.e_examinationPaper+'findOptionalPapers',{}).then((res)=>{
 	        this.allSJData = res
 	    })
         
-      }
+	  },
   },
   created:function(){
   	this.initdata()
   },
   mounted:function(){
-  	
   	
   	this.$bus.$on('clickXJKS',()=>{
   		this.clearnAllData()
@@ -575,12 +569,16 @@ export default {
   	})
   	this.$bus.$on('createdKS',(res)=>{
   		this.clearnAllData()
-  		this.SJdata.push(res.id)
+  		// this.SJdata.push(res.id)
         this.$router.push({path: '/examManagement'});
         this.$store.state.addSJ.dialogVisible = false
         this.$store.state.addKS.dialogVisible = true
     })       
-
+  	this.$bus.$on('allKS',(res)=>{
+		this.$axiosResBody('get',this.$axiosURL.e_examinationPaper+'findOptionalPapers').then((res)=>{
+			this.allSJData = res
+		})
+    })  
     //考试编辑
 	this.$bus.$on('EditKS',(row)=>{
 		this.oldKSdata = row
@@ -588,7 +586,6 @@ export default {
 		this.clickSTJXQ()
 		this.demoId = 1
 		this.changeYL = true  //改为修改按钮
-		console.log(11,row);
 		this.formXXLR = {
           ksName: row.examName,
           ksxs: row.examModality,
@@ -612,7 +609,6 @@ export default {
 
 	    //评定规则
 	    if (row.pdgz.indexOf(',')!= '-1') {
-	    	console.log(111,row.pdgz);
 	    	this.dynamicValidateForm.list = []
 	    	row.pdgz.split(',').forEach((element,index)=>{
 	    		this.dynamicValidateForm.list.push({value:element})
@@ -620,20 +616,17 @@ export default {
 	    }else if(row.pdgz.indexOf('%')!= '-1'){
 	    	this.value3 = true
 	    	this.formGGKS.TGL = row.pdgz.split('%')[0]
-	    	console.log(222,row.pdgz);
 	    }else if(row.pdgz){
 	    	this.value3 = false
 	    	this.formGGKS.FS = row.pdgz
-	    	console.log(333,row.pdgz);
 	    }
 
 	    setTimeout(()=>{
-            console.log(stu,998)
 	    	this.$refs.tree2.setCheckedKeys(stu,true)
 	    },0)
 	})
                  
-  }
+  },
 }
 </script>
 <style scoped>

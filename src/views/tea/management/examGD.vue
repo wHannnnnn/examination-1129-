@@ -42,7 +42,6 @@
         :data="tableData"
         border
         style="width: 100%"
-        max-height="490"
         size='mini'>
         <el-table-column
           prop="id"

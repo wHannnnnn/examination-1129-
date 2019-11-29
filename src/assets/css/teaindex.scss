@@ -16,14 +16,19 @@
   }
   .el-menu{
       text-align: center;
-      padding: 10px;
+      padding: 6px;
+      overflow: auto;
+      display: flex;
+  }
+  .el-menu-item{
+    padding: 0 40px;
   }
   .el-menu-item,.el-submenu__title{
     font-size: 16px
   }
   .el-menu--horizontal>.el-submenu .el-submenu__title,.el-menu--horizontal>.el-menu-item{
-    height: 50px;
-    line-height: 50px 
+    height: 44px;
+    line-height: 44px 
   }
   .el-menu--horizontal>.el-menu-item.is-active{
     @extend %contentbgcolor;
@@ -42,9 +47,8 @@
   .tea_right{
     overflow: auto;
     padding: 10px;
-    overflow-x: hidden;
-    overflow-y: hidden;
-    margin-top: 10px;
+    margin-top: 6px;
+    height: calc(100vh - 199px);
     @extend %boxshadow;
   }
   .breadcrumb{
@@ -168,5 +172,54 @@
       box-sizing: border-box;
       cursor: pointer;
       outline: 0;
+  }
+}
+// 试题详情
+.STleft{
+  img{
+    width: 150px;
+    vertical-align: middle;
+    margin-left: 6px;
+  }
+  .aImg {
+    display: inline-block;
+  }
+  .tImg {
+    display: flex;
+    align-items: center;
+    overflow: auto;
+  }
+  .imgList{
+    display: flex;
+    justify-content: center;
+    div {
+      padding: 0 10px
+    }
+  }
+  .el-checkbox {
+    width: 100%;
+    .el-checkbox__label{
+      width: 100%;
+    }
+  }
+  .aedit{
+    display: inline-block;
+    font-size: 20px;
+    span{
+      font-size: 14px;
+      overflow: hidden;
+      display: inline-block;
+      width: 100%
+    }
+    input {
+      position: absolute;
+      opacity: 0;
+      width: 20px
+    }
+  }
+  .el-upload--picture-card{
+      width: 120px;
+      height: 120px;
+      line-height: 120px;
   }
 }

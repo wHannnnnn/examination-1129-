@@ -38,7 +38,7 @@ export default {
             })
         },
         RMClick:function(item){
-            sessionStorage.setItem('LSKJ',JSON.stringify(item))
+            localStorage.setItem('LSKJ',JSON.stringify(item))
             const route = this.$router.resolve({name:'classRoom'})
             window.open(route.href,'_blank',)
         },

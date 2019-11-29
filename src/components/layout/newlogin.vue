@@ -4,12 +4,12 @@
 
         <el-dropdown trigger="click" @command='change' class="loginuser" v-if="!this.$store.state.aId||this.$store.state.aId==null">
             <span class="el-dropdown-link">
-                <i class="el-icon-user">{{loginUser}}</i><i class="el-icon-caret-bottom"></i>
+                <i class="el-icon-user">{{aloginUser}}</i><i class="el-icon-caret-bottom"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item command="学生">学生</el-dropdown-item>
                 <el-dropdown-item command="教师">教师</el-dropdown-item>
-                <el-dropdown-item command="运维">运维</el-dropdown-item>
+                <a :href="this.$BASEURL + '/api-b/index.html'" target="_blank"><el-dropdown-item command="运维">运维</el-dropdown-item></a>
             </el-dropdown-menu>
         </el-dropdown>
 
@@ -61,17 +61,31 @@
 
     <el-card class="box-card" v-if="scrollShowArr.indexOf(this.$route.path) !== -1"  :body-style="{ padding: '10px' }">
         <div slot="header" class="clearfix">
-            <span>信息公告</span>
+            <span style="test-align:center">信息公告</span>
         </div>
-        <vue-seamless-scroll :data="textItem" :class-option="classOption" class="table-content">
-            <div v-for="(item,index) in textItem" :key="index" class="textitem">
-                {{'列表内容 ' + item.value }}
+        <vue-seamless-scroll :data="textItem" :class-option="classOption" class="table-content"  @click='hancleClick($event)'>
+            <div v-for="(item,index) in textItem" class="textitem" :data-details="item" @click="itemClick(item)">
+                {{item.title}}
             </div>
         </vue-seamless-scroll>
     </el-card>
+    <el-dialog
+        title="信息公告"
+        :visible.sync="dialogVisible"
+        width="30%"
+        >
+        <p>标题：{{itemData.title}}</p>
+        <p>内容：{{itemData.content}}</p>
+        <p>时间：{{UTCtoDate(itemData.createTime)}}</p>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        </span>
+    </el-dialog>
 </div>
 </template>
 <script>
+    import { mapState } from 'vuex'
     export default {
     name: '',
     data () {
@@ -83,43 +97,37 @@
                     checkCode:'',
             },
             isLogin: true,
-            textItem:[
-                {
-                    value: 'aaaaaaaaa'
-                },
-                {
-                    value: 'bbbbbbbb'
-                },
-                {
-                    value: 'ccccccccc'
-                },
-                {
-                    value: 'ddddddssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssddddd'
-                },
-                {
-                    value: 'eeeeeeeee'
-                },
-                {
-                    value: 'ffffffffff'
-                },
-
-            ],
-            loginUser: '学生',
-            scrollShowArr: ['/hot_video','/blog','/teaplan','/hot_music','/hot_pic','/exam_plan']
+            textItem:[],
+            aloginUser: '学生',
+            scrollShowArr: ['/hot_video','/blog','/teaplan','/hot_music','/hot_pic','/exam_plan'],
+            dialogVisible: false,
+            itemData: [],
+            // squareUrl: require('../../assets/img/girl.png'),
+            
         }
     },
     computed: {
       classOption () {
         return {
-          // singleHeight: 5,
-          // waitTime: 2000,
-          // step: 0.1,
           hoverStop: true,
-          // limitMoveNum:5
         }
-      }
+      },
+        ...mapState(['loginUser']),
+        asex(){
+            return this.loginUser==null? null: this.loginUser.sex
+        },
+        squareUrl(){
+            if(this.asex == true){
+                return require('../../assets/img/boy.png')
+                }else {
+                return require('../../assets/img/girl.png')
+            }
+        }
     },
     methods: {
+        UTCtoDate:function(date){
+            return this.$tools.UTCtoDate(date)
+        },
         createCode(){
             //先清空验证码的输入
             this.code = "";
@@ -149,7 +157,7 @@
                 password:this.loginInfo.password,
             }
             // 学生登录
-            if(this.loginUser == '学生'){
+            if(this.aloginUser == '学生'){
                 this.$axiosStuResBody1('post',this.$axiosURL.student+'login',data).then((res)=>{
                     console.log(res);
                     if (res.code == '401') {
@@ -159,9 +167,9 @@
                     }else{
                         this.$message.success('用户名登录成功！')
                         this.dialogLogin = false
-                        sessionStorage.setItem('access_token', res.access_token)
-                        sessionStorage.setItem('loginUser', JSON.stringify(res.loginUser))
-                        sessionStorage.setItem('role', res.loginUser.sysRole.code)
+                        localStorage.setItem('access_token', res.access_token)
+                        localStorage.setItem('loginUser', JSON.stringify(res.loginUser))
+                        localStorage.setItem('role', res.loginUser.sysRole.code)
 
                         this.$store.state.loginUser = res.loginUser
                         this.$store.state.role = res.loginUser.sysRole.code;
@@ -169,12 +177,12 @@
                         this.LoginUserName = res.loginUser.username
     
                         this.$axiosStuRes('get',this.$axiosURL.b_dictionarys,'').then((res)=>{
-                            sessionStorage.setItem('dictionarys', JSON.stringify(res))
+                            localStorage.setItem('dictionarys', JSON.stringify(res))
                             this.$store.state.dictionarys = res;
                         })
                         this.isLogin = true;
                         this.$axiosStuRes1('get',this.$axiosURL.K_neoUser+ 'find/' + res.loginUser.id).then((res)=>{
-                            sessionStorage.setItem('aId', JSON.stringify(res.id))
+                            localStorage.setItem('aId', JSON.stringify(res.id))
                             this.$store.state.aId = res.id
                             // this.$router.push({path:'/'})
                         })
@@ -183,7 +191,7 @@
                     this.createCode()
                 })
             }
-            if(this.loginUser == '教师'){
+            if(this.aloginUser == '教师'){
                 this.$axiosPost(this.$axiosURL.system + 'login',data).then((data)=>{
                     if (data.code == '401') {
                     this.$message.error(data.error_description)
@@ -196,9 +204,9 @@
                     this.createCode()
                     }else{
                     if (data.access_token) {
-                        sessionStorage.setItem('access_token', data.access_token)
-                        sessionStorage.setItem('loginUser', JSON.stringify(data.loginUser))
-                        sessionStorage.setItem('role', data.loginUser.sysRole.code)
+                        localStorage.setItem('access_token', data.access_token)
+                        localStorage.setItem('loginUser', JSON.stringify(data.loginUser))
+                        localStorage.setItem('role', data.loginUser.sysRole.code)
 
                         this.$store.state.login = true;
                         this.$store.state.loginUser = data.loginUser
@@ -208,13 +216,13 @@
                         this.isLogin = true;
                         // this.$axiosStuRes1('get',this.$axiosURL.K_neoUser+ 'find/' + res.loginUser.id).then((res)=>{
                         this.$axiosStuRes1('get',this.$axiosURL.K_neoUser+ 'find/' + data.loginUser.id).then((res)=>{
-                            sessionStorage.setItem('aId', JSON.stringify(res.id))
+                            localStorage.setItem('aId', JSON.stringify(res.id))
                             this.$store.state.aId = res.id
                             // this.$router.push({path:'/'})
                         })
 
                         this.$axiosRes('get',this.$axiosURL.b_dictionarys,{}).then((res)=>{
-                            sessionStorage.setItem('dictionarys', JSON.stringify(res))
+                            localStorage.setItem('dictionarys', JSON.stringify(res))
                             this.$store.state.dictionarys = res;
                         }).then(()=>{
                             if (this.$store.state.role =='QUESTIONS_BANK_TEACHER') {
@@ -241,7 +249,10 @@
         },
         change(val){
             console.log(val)
-            this.loginUser = val
+            if(val == '运维'){
+
+            }
+            this.aloginUser = val
         },
         out: function () {
             this.$confirm('是否退出登录?', '提示', {
@@ -249,10 +260,10 @@
                 cancelButtonText: '取消',
                 type: 'success'
             }).then(() => {
-                sessionStorage.removeItem('access_token')
-                sessionStorage.removeItem('loginUser')
-                sessionStorage.removeItem('role')
-                sessionStorage.removeItem('aId')
+                localStorage.removeItem('access_token')
+                localStorage.removeItem('loginUser')
+                localStorage.removeItem('role')
+                localStorage.removeItem('aId')
                 this.$store.state.access_token = null
                 this.$store.state.loginUser = null
                 this.$store.state.role = null
@@ -271,16 +282,30 @@
                     checkCode:'',
             } 
             this.$router.push({path:'/user'})
+        },
+        getNews(){
+            this.$axiosRes2('get', this.$axiosURL.u_notice + 'query/all?visible=3').then((res) => {
+                this.textItem = res
+            })
+        },
+        itemClick(data){
+            console.log(data)
+            this.itemData = data
+            this.dialogVisible = true
+        },
+        hancleClick(event){
+            console.log(event.target.dataset.details)
         }
     },
     created() {
-        this.$store.state.loginUser=JSON.parse(sessionStorage.getItem('loginUser'))
+        this.getNews()
+        this.$store.state.loginUser=JSON.parse(localStorage.getItem('loginUser'))
         console.log(this.$store.state.loginUser);
-        // this.$store.state.student_login = sessionStorage.getItem('student_login')
-        this.aId = sessionStorage.getItem('aId')
+        // this.$store.state.student_login = localStorage.getItem('student_login')
+        this.aId = localStorage.getItem('aId')
         if (this.$store.state.loginUser) {
         this.isLogin = true
-        this.LoginUserName = JSON.parse(sessionStorage.getItem('loginUser')).username
+        this.LoginUserName = JSON.parse(localStorage.getItem('loginUser')).username
         }else{
         this.isLogin = false
         }
@@ -288,3 +313,8 @@
     },
 }
 </script>
+<style lang="scss">
+    .el-avatar {
+        background: none
+    }
+</style>

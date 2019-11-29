@@ -84,7 +84,6 @@
     style="width: 100%"
     @selection-change="handleSelectionChange"
     :row-style="showTr"
-    max-height="500"
     >
     <el-table-column
       type="selection"
@@ -1772,7 +1771,7 @@ export default {
                //  url: res.requestFullPathAndFileName,
                //  type: 'get',
                //  data: {'fileName': 'word.docx'},
-               //  headers: {"Authorization": 'Bearer '+ sessionStorage.getItem('access_token')},
+               //  headers: {"Authorization": 'Bearer '+ localStorage.getItem('access_token')},
                //  success: function(data){
                //    console.log(data,333)
                //    $.download()
@@ -1888,17 +1887,17 @@ export default {
 
           for (var i = 0; i < formName.examinationSubquestions.length; i++) {
             // 综合题下的选择题 选项数据类型转换
-            if(formName.examinationSubquestions[i].questionType == "MULTIPLE_CHOICE" || formName.examinationSubquestions[i].questionType == "SINGLE_CHOICE") {
-              var array = []
-              for(var j=0; j< formName.examinationSubquestions[i].questionOption.length; j++){
-                  var str = ''
-                  str = formName.examinationSubquestions[i].questionOption[j].key + '.' + formName.examinationSubquestions[i].questionOption[j].value
-                  array.push(str)
-              }
-              array.join(',')
-              formName.examinationSubquestions[i].questionOption = array.join(';')
-            }
-
+            // if(formName.examinationSubquestions[i].questionType == "MULTIPLE_CHOICE" || formName.examinationSubquestions[i].questionType == "SINGLE_CHOICE") {
+            //   var array = []
+            //   for(var j=0; j< formName.examinationSubquestions[i].questionOption.length; j++){
+            //       var str = ''
+            //       str = formName.examinationSubquestions[i].questionOption[j].key + '.' + formName.examinationSubquestions[i].questionOption[j].value
+            //       array.push(str)
+            //   }
+            //   array.join(',')
+            //   formName.examinationSubquestions[i].questionOption = array.join(';')
+            // }
+            formName.examinationSubquestions[i].questionOption = formName.examinationSubquestions[i].questionOptions 
             if(formName.examinationSubquestions[i].questionType == "MULTIPLE_CHOICE") {
                 var str =  formName.examinationSubquestions[i].questionAnswer
                 formName.examinationSubquestions[i].questionAnswer = str.join(',')
@@ -1983,6 +1982,7 @@ export default {
         var aupdateTime = Date.parse(new Date())
         formName['updateTime'] = aupdateTime
         formName['updateUserID'] = this.$store.state.aId
+        console.log(params,998999)
         this.$axiosResBody1('put',this.$axiosURL.k_examinationQuestion+ 'update',params).then((res)=>{
           this.questionTable()
         })

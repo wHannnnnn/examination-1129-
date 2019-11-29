@@ -31,12 +31,12 @@
         <span style='display: inline-block;height:100%;vertical-align: middle'></span>
       </div>
       <div v-show="FJdata.fileType == 0" class='HW100'>
-        <div style='height: 600px;overflow-x: hidden;overflow-y: auto;'>
+        <div style='height: 580px;overflow-x: hidden;overflow-y: auto;'>
           <pdf 
           v-for='item in numPages'
           :key='item'
           :page='item'
-          :src="FJdata.onlinePath"
+          :src="myUrl(FJdata.onlinePath)"
           ></pdf>
         </div>
       </div>
@@ -127,7 +127,9 @@ export default {
     }
   },
   methods: {
-    
+    myUrl(url){
+      return this.$BASEURL + url
+    }
   },
   computed: {
     player() {
@@ -135,11 +137,12 @@ export default {
     }
   },
   mounted:function(){
-    console.log('onlinePath',this.FJdata)
     var loadingTask = pdf.createLoadingTask({
-      url:this.FJdata.onlinePath,
+      url:this.$BASEURL + this.FJdata.onlinePath,
     });
+    console.log(loadingTask,9999)
     loadingTask.then(pdf => {
+      console.log(pdf,8888)
       this.numPages = pdf.numPages;
     });
   },
@@ -173,4 +176,7 @@ export default {
   width:100%;
   text-align: center;
 }
+  .HW100 span {
+    width: 100%
+  }
 </style>

@@ -1,5 +1,10 @@
 @import "variable.scss";
 .user{
+    .user_con {
+        height: calc(100vh - 136px);
+        background: #fff;
+        padding: 10px;
+    }
     .el-tabs__active-bar{
         @extend %contentbgcolor;
     }

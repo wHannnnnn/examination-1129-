@@ -73,18 +73,18 @@ axios.interceptors.response.use(response => {
     return Promise.resolve(err.response)
 })
 
-const getSessionStorage = function(){
-  if (!sessionStorage.getItem('access_token')) {
+const getlocalStorage = function(){
+  if (!localStorage.getItem('access_token')) {
     return ''
   }
-  return sessionStorage.getItem('access_token');
+  return localStorage.getItem('access_token');
 }
 
-const stuGetSessionStorage = function(){
-  if (!sessionStorage.getItem('access_token')) {
+const stuGetlocalStorage = function(){
+  if (!localStorage.getItem('access_token')) {
     return ''
   }
-  return sessionStorage.getItem('access_token');
+  return localStorage.getItem('access_token');
 }
 
 axios.defaults.baseURL = ''
@@ -101,7 +101,7 @@ const get = function (url,param) {
         axios({
           method: 'get',
           url,
-          headers:{'Authorization':'Bearer '+getSessionStorage()},
+          headers:{'Authorization':'Bearer '+getlocalStorage()},
           params: param,
           cancelToken: new CancelToken(c => {
             cancel = c
@@ -117,7 +117,7 @@ const get = function (url,param) {
       axios({
         method: 'post',
         url,
-        headers:{'Authorization':'Bearer '+getSessionStorage()},
+        headers:{'Authorization':'Bearer '+getlocalStorage()},
         params: param,
         cancelToken: new CancelToken(c => {
           cancel = c
@@ -134,7 +134,7 @@ const get = function (url,param) {
       axios({
         method: 'get',
         url,
-        headers:{'Authorization':'Bearer '+getSessionStorage()},
+        headers:{'Authorization':'Bearer '+getlocalStorage()},
         params: param,
         //responseType:'blob',
         cancelToken: new CancelToken(c => {
@@ -166,7 +166,7 @@ const get = function (url,param) {
     return new Promise((resolve,reject) => {
       axios({
         method: 'post',
-        headers:{'Authorization':'Bearer '+getSessionStorage()},
+        headers:{'Authorization':'Bearer '+getlocalStorage()},
         url,
         data: data,
         responseType:'blob',
@@ -184,7 +184,7 @@ const get = function (url,param) {
       axios({
         method: method,
         url,
-        headers:{'Authorization':'Bearer '+getSessionStorage(),'Content-Type':'application/json; charset=utf-8'},
+        headers:{'Authorization':'Bearer '+getlocalStorage(),'Content-Type':'application/json; charset=utf-8'},
         data: data,
         cancelToken: new CancelToken(c => {
           cancel = c
@@ -201,7 +201,7 @@ const get = function (url,param) {
         method: method,
         url,
 
-        headers:{'Authorization':'Bearer '+getSessionStorage(),'Content-Type':'application/json; charset=utf-8'},
+        headers:{'Authorization':'Bearer '+getlocalStorage(),'Content-Type':'application/json; charset=utf-8'},
         data: data,
         cancelToken: new CancelToken(c => {
           cancel = c
@@ -233,7 +233,7 @@ const get = function (url,param) {
       axios({
         method: method,
         url,
-        headers:{'Authorization':'Bearer '+getSessionStorage(),'Content-Type':'application/json; charset=utf-8'},
+        headers:{'Authorization':'Bearer '+getlocalStorage(),'Content-Type':'application/json; charset=utf-8'},
         params: param,
         cancelToken: new CancelToken(c => {
           cancel = c
@@ -251,7 +251,7 @@ const get = function (url,param) {
         method: method,
         url,
 
-        headers:{'Authorization':'Bearer '+getSessionStorage(),'Content-Type':'application/json; charset=utf-8'},
+        headers:{'Authorization':'Bearer '+getlocalStorage(),'Content-Type':'application/json; charset=utf-8'},
         params: param,
         cancelToken: new CancelToken(c => {
           cancel = c
@@ -286,7 +286,7 @@ const get = function (url,param) {
       axios({
         method: 'get',
         url,
-        headers:{'Authorization':'Bearer '+stuGetSessionStorage()},
+        headers:{'Authorization':'Bearer '+stuGetlocalStorage()},
         params: param,
         cancelToken: new CancelToken(c => {
           cancel = c
@@ -302,7 +302,7 @@ const stuPost = function (url,param) {
     axios({
       method: 'post',
       url,
-      headers:{'Authorization':'Bearer '+stuGetSessionStorage()},
+      headers:{'Authorization':'Bearer '+stuGetlocalStorage()},
       params: param,
       cancelToken: new CancelToken(c => {
         cancel = c
@@ -319,7 +319,7 @@ const stuPost = function (url,param) {
     axios({
       method: method,
       url,
-      headers:{'Authorization':'Bearer '+stuGetSessionStorage(),'Content-Type':'application/json; charset=utf-8'},
+      headers:{'Authorization':'Bearer '+stuGetlocalStorage(),'Content-Type':'application/json; charset=utf-8'},
       data: data,
       cancelToken: new CancelToken(c => {
         cancel = c
@@ -351,7 +351,7 @@ const stuRes1 = function (method,url,param) {
     axios({
       method: method,
       url,
-      headers:{'Authorization':'Bearer '+stuGetSessionStorage(),'Content-Type':'application/json; charset=utf-8'},
+      headers:{'Authorization':'Bearer '+stuGetlocalStorage(),'Content-Type':'application/json; charset=utf-8'},
       params: param,
       cancelToken: new CancelToken(c => {
         cancel = c
@@ -384,7 +384,7 @@ const stuDownload = function (url,param) {
     axios({
       method: 'get',
       url,
-      // headers:{'Authorization':'Bearer '+getSessionStorage()},
+      // headers:{'Authorization':'Bearer '+getlocalStorage()},
       params: param,
       //responseType:'blob',
       cancelToken: new CancelToken(c => {
@@ -396,10 +396,10 @@ const stuDownload = function (url,param) {
   })
  }   
 
-const uploadImg = function (url, data) {
+const uploadImg = function (method,url, data) {
   return new Promise((resolve, reject) => {
     axios({
-      method: 'post',
+      method: method,
       url,
       headers: { 'Content-Type': 'multipart/form-data' },
       data: data,

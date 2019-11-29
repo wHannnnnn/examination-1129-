@@ -59,7 +59,7 @@
   	};
 </script>
 
-<style scope>
+<style scoped>
 	.el-main {
 		padding: 10px;
 	}

@@ -4,8 +4,8 @@
         <impheader></impheader>
     </div>
     <div class="classRoom_div">
-       <el-row :gutter="20">
-        <el-col :span='18'>
+       <el-row style="height: 100%">
+        <el-col :span='19' style="height: 100%;padding-right:6px;box-sizing:boder-box">
           <div class='classRoom_left'>
             <div class='classRoom_player' v-if='isuniPlayer'>
               <uniPlayer :FJdata='nowFJ' ></uniPlayer>
@@ -15,14 +15,15 @@
             <div>
               <img :src="learn1">所属知识点:{{nowFJ.ZSDname}}
               <img :src="learn2">浏览:{{nowFJ.browsingNum}} <img :src="learn3">收藏:{{nowFJ.collectionNum}} <img :src="learn4">下载:{{nowFJ.downloadNum}}
-              <img :src="learn5">上传人:{{nowFJ.userName}} <img :src="learn5">上传时间:{{UTCtoDate(nowFJ.uploadTime)}}
+              <img :src="learn5">上传人:{{nowFJ.userName}} 
+              <!-- <img :src="learn5">上传时间:{{UTCtoDate(nowFJ.uploadTime)}} -->
             </div>
             <div class='classRoom_CZ'>
-              <div style='cursor: pointer;background: #090b16ad;width: 60px' @click='add_remove_CollectData'>
+              <div style='cursor: pointer;width: 60px' @click='add_remove_CollectData'>
                   <img :src="isCollectData?imgSrc2:imgSrc1" style='width: 20px;height:20px;position:relative;top:4px;'>
                 <div style='display: inline-block;'>{{isCollectData?'取消':'收藏'}}</div>
               </div>
-              <div style='cursor:pointer;background: #090b16ad;width: 60px' @click='downCollectData'>
+              <div style='cursor:pointer;width: 60px' @click='downCollectData'>
                 <img :src="imgDown" style='width: 20px;height:20px;position:relative;top:4px;'>
                 <div style='display: inline-block;'>下载</div>
               </div>
@@ -33,7 +34,7 @@
           相关课件资料
           <el-row :gutter="7">
               <el-col :span='12' :key='item.id' v-for='item in XGflie'>
-                <div class="classRoom_border" :style="'background-size: 100%  100%;background: url('+ImgSrc(item) +') center center / 100% 100% no-repeat;'" @click='toClassRoom(item)'>
+                <div class="classRoom_border" :style="'background-size: 100%  100%;background: url('+ImgSrc(item) +') center center / 100% no-repeat;'" @click='toClassRoom(item)'>
                   <div class="classRoom_border_fileTitle">
                     {{item.fileTitle}}
                   </div>
@@ -58,6 +59,9 @@
         </el-col>
       </el-row>
     </div>
+    <div class="app_bottom">
+      <bottom/>
+    </div>
     <el-dialog title="请先登录" :visible.sync="loginShow" width="30%">
         <newlogin></newlogin>
     </el-dialog>
@@ -66,13 +70,15 @@
 
 <script>
 import impheader from '@/components/layout/header1'
-import uniPlayer from '../unit/unit_player.vue'
+import uniPlayer from '@/components/unit/unit_player.vue'
 import { mapState } from 'vuex'
 import newlogin from '@/components/layout/newlogin'
+import bottom from "@/components/layout/bottom.vue"
+import Vue from 'vue'
 export default {
   name: 'index',
   components:{
-    uniPlayer,impheader,newlogin
+    uniPlayer,impheader,newlogin,bottom
   },
   data () {
     return {
@@ -112,9 +118,11 @@ export default {
       if (this.isCollectData) {
         this.$axiosStuRes1('delete',this.$axiosURL.f_file+'delCollectFile/'+this.nowFJ.fileId+'/'+this.aid,{}).then((res)=>{
           this.isCollectData = !this.isCollectData
+          console.log(res)
         })
       } else {
         this.$axiosStuRes1('get',this.$axiosURL.f_file+'addCollectFile/'+this.nowFJ.fileId+'/'+this.aid,{}).then((res)=>{
+          console.log(res)
           if(res.error == 'invalid_token') {
               this.loginShow = true
               return
@@ -134,7 +142,7 @@ export default {
         this.$axiosStuRes1('get',this.$axiosURL.K_knowledgePoint+item.kpointId,{}).then((res)=>{
           item['ZSDname'] = res.name
         }).then(()=>{
-          sessionStorage.setItem('LSKJ',JSON.stringify(item))
+          localStorage.setItem('LSKJ',JSON.stringify(item))
           this.nowFJ = item
           this.initData()
           this.isuniPlayer = false
@@ -146,7 +154,7 @@ export default {
       
     },
     ImgSrc:function(data){
-      if (data.fileType == 0||data.fileType==3) {
+      if (data.fileType == 0||data.fileType==3||data.fileType==2) {
         return this.$BASEURL +  data.videoImg
       } else {
         return this.$BASEURL +  data.onlinePath
@@ -160,7 +168,7 @@ export default {
     },
     selectCollectFile:function(){
       //查询用户收藏
-      this.$axiosStuRes1('get',this.$axiosURL.f_file+'selectCollectFile/'+this.aid,'').then((res)=>{
+      this.$axiosStuRes1('get',this.$axiosURL.f_file+'selectCollectFile/'+ this.aid,'').then((res)=>{
         this.CollectData ==res
         //判断是否存在
         var a = res.filter((element)=>{
@@ -181,7 +189,7 @@ export default {
       //添加浏览量
       this.$axiosStuRes1('get',this.$axiosURL.f_file+'browsingNumUpdate/'+this.nowFJ.fileId,{}).then((res)=>{
       })
-      this.selectCollectFile()
+      // this.selectCollectFile()
       this.$axiosStuRes1('get',this.$axiosURL.K_knowledgePoint+this.nowFJ.kpointId,{}).then((res)=>{
           this.ZSDname = res.name
       })
@@ -198,28 +206,35 @@ export default {
       })
       this.TJflie = []
       this.$axiosStuRes1('get',this.$axiosURL.K_knowledgePoint+'find/'+ this.nowFJ.kpointId+'/correlatedPoint',{}).then((res)=>{
+        console.log(res)
           res.correlateKnowledgePoints.forEach((element)=>{
             var params = {
-              pageNum: 1,
-              pageSize: 55,
-              fileName: '',
-              kpointId: element.id,
-              fileType: '',
+              data:{
+                pageNum: 1,
+                pageSize: 55,
+                fileName: '',
+                kpointId: element.id,
+                fileType: '',
+              }
             }
-            this.$axiosStuResBody('post',this.$axiosURL.f_file+'list/null' ,params).then((res)=>{
-                this.TJflie = this.TJflie.concat(res.data)
+             this.$axiosResBody('post', this.$axiosURL.Fr_es + 'anon/find/fileinfo/null', params).then((res) => {
+                this.TJflie = this.TJflie.concat(res.dataList)
             })
           })
-          console.log(this.TJflie);
       })
     }
   },
  
   created:function(){
     //this.nowFJ = this.$route.params.data
-    this.nowFJ = JSON.parse(sessionStorage.getItem('LSKJ'))
-    console.log('nowFJ',this.nowFJ);
-    console.log('nowFJ',this.$route.params);
+    this.nowFJ = JSON.parse(localStorage.getItem('LSKJ'))
+    this.$axiosStuRes1('get', this.$axiosURL.K_neoUser + this.nowFJ.userId + '/find', {}).then((res) => {
+      Vue.set(this.nowFJ,'userName',res.name)
+    }).then(()=>{
+      this.$axiosStuRes1('get', this.$axiosURL.K_knowledgePoint + this.nowFJ.kpointId, {}).then((res) => {
+        Vue.set(this.nowFJ,'ZSDname',res.name)
+      })
+    })
   },
   mounted:function(){
       this.initData()

@@ -50,7 +50,7 @@
     <treegraph v-show="mulushow == false" ref="agraph"></treegraph>
 
     <!-- 创建学科弹框 -->
-    <el-dialog :before-close="handleClose" title="创建学科" :visible.sync="knowPointsShow">
+    <el-dialog :before-close="handleClose" title="创建学科" :visible.sync="knowPointsShow" width="500px">
       <el-form :model="CJPointsForm" :rules="rules" ref="CJPointsForm">
         <el-form-item label="学科名称">
           <el-input v-model="CJPointsForm.name" autocomplete="off" placeholder="请输入学科名称"></el-input>

@@ -339,7 +339,7 @@ export default {
           age:''
           },
           multioleSelection:[],
-          headers:{'Authorization':'Bearer '+this.getSessionStorage()},
+          headers:{'Authorization':'Bearer '+this.getlocalStorage()},
           // 提示错误信息
         rules: {
           username: [
@@ -415,11 +415,11 @@ export default {
       this.findPaperPage()
     },
 
-    getSessionStorage:function(){
-      if (!sessionStorage.getItem('access_token')) {
+    getlocalStorage:function(){
+      if (!localStorage.getItem('access_token')) {
         return ''
       }
-      return sessionStorage.getItem('access_token');
+      return localStorage.getItem('access_token');
     },
     studentOut:function(){
       console.log(this.multioleSelection);
@@ -649,7 +649,7 @@ export default {
   }
 }
 </script>
-<style scope>
+<style scoped>
   .el-tag {
     background-color: transparent;
     border: none;

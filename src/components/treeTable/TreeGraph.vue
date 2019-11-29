@@ -522,7 +522,7 @@
     }
 }
 </script>
-<style>
+<style scoped>
     #menu {
         position: fixed;
         left: 0;

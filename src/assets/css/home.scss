@@ -1,7 +1,7 @@
 @import "variable.scss";
 .app_content{
     display: flex;
-    height: calc(100vh - 160px);
+    height: calc(100vh - 116px);
     .app_content_left{
         width: 80%;
         display: flex;
@@ -13,8 +13,110 @@
         .content-center{
             width:100%;
             padding: 10px;
-            overflow: auto;
+            overflow: hidden;
             @extend %boxshadow;
+            // 热门话题
+            .hotTopic{
+                width:100%;
+                //todo 父级加height
+                height: calc(100vh - 184px);
+                overflow: auto;
+                background: #fff;
+                li {
+                    position: relative;
+                    min-height: 72px;
+                    padding: 30px 19px;
+                    border-bottom: 1px solid #e6e7eb;
+                    .content {
+                        position: relative;
+                        height: auto;
+                        width: 100%;
+                        .topic-name{
+                            height: 40px;
+                            line-height: 40px;
+                            width: 100%;
+                            .pointName{
+                                font-size: 18px;
+                                color: #404040;
+                                font-weight: 700;
+                                margin-right: 15px;
+                            }
+                        }
+                        .topic-title {
+                            width: 100%;
+                            height: 30px;
+                            .title-value{
+                                max-width: 520px;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                white-space: nowrap;
+                                font-size: 18px;
+                                color: #585858;
+                                text-align: left;
+                                margin-right: 5px;
+                            }
+                        }
+                        .topic-detail {
+                            width: 100%;
+                            min-height: 27px;
+                            margin-bottom: 10px;
+                            color: #585858;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                            p img{
+                                max-width: 100%
+                            };
+                            .detail-text{
+                                font-size: 14px;
+                                color: #a7a7a7;
+                                max-height: 30px;
+                                max-width: 100%;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                white-space: nowrap;
+                                line-height: 24px;
+                            }
+                        }
+                        .topic-info {
+                            width: 100%;
+                            height: 20px;
+                            display: flex;
+                            justify-content: space-between;
+                            .userInfo{
+                                min-width: 160px;
+                                max-width: 400px;
+                                .userInfoName{
+                                    display: inline-block;
+                                    position: relative;
+                                    line-height: 20px;
+                                    font-size: 12px;
+                                    color: #666;
+                                }
+                            }
+                            .topicTime{
+                                font-size: 12px;
+                                color: #666;
+                                margin-left: 5px;
+                            }
+                            .dataNum{
+                                display: inline-block;
+                                height: 20px;
+                                line-height: 20px;
+                                font-size: 12px;
+                                color: #a7a7a7;
+                                margin-top: 4px;
+                                .watchNum,.commentNum{
+                                    margin-right: 20px;
+                                }
+                                img {
+                                    margin-right: 5px;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             .el-table--border th{
                 @extend %contentbgcolor;
                 color: #fff
@@ -48,14 +150,16 @@
                 }
             };
     .search{
-        margin-bottom: 10px;
+        margin-bottom: 6px;
         .el-input__inner{
             height: 50px;
             line-height: 60px;
         }
+        
         .el-input-group__append{
             @extend %contentbgcolor;
             color: #fff;
+            border: none;
             transition: background .3s,color .1s;
             &:hover{
                 @extend %buttonhover;
@@ -64,8 +168,8 @@
     }
     }
     .rightLogin{
-        width:19%;
-        margin-left: 10px;
+        width:20%;
+        margin-left: 6px;
         overflow: hidden;
         .mine{
             padding: 0 10px;
@@ -75,7 +179,7 @@
         .right-top{
             box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
             border: 1px solid #EBEEF5;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
             @extend %boxshadow;
             .el-dropdown{
                 // border: 1px solid #ddd;
@@ -98,7 +202,7 @@
                 @extend %fontcolor;
             }
             &.is-always-shadow{
-                height: calc(100% - 280px);
+                height: calc(100% - 250px);
                 overflow: hidden
             }
             &__body{
@@ -113,7 +217,7 @@
     width:100%;
     display: flex;
     @extend %headerbg;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
     .title{
         font-size: 24px;
         color: #fff;
@@ -122,7 +226,7 @@
         padding-right: 10px
     }
     .el-dropdown{
-        @extend %fontcolor;
+        color: #fff
     };
     .el-button{
         @extend %headerbg;
@@ -149,9 +253,17 @@
 };
 .app_bottom {
     width: 100%;
-    height: 80px;
+    height: 44px;
+    margin-top: 6px;
     @extend %headerbg;
-    margin-top: 10px;
+    div {
+        text-align: center;
+        line-height: 44px;
+    }
+    span {
+        color: #fff
+    }
+    // margin-top: 10px;
 }
 .allSearch{
     width:100%;
@@ -358,15 +470,21 @@
             h3{
                 margin: 10px 0;
             }
-            .listImg,.listImg img{
-                width: 160px;
-                height: 160px;
+            .listImg{
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .listImg img{
+                width: 140px;
+                max-height: 160px;
             }
         }
     }
 }
 .searchListShow{
     display: flex;
-    height:calc(100% - 60px);
+    height:calc(100% - 30px);
     overflow: auto;
 }

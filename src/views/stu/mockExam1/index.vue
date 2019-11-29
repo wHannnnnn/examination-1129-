@@ -6,10 +6,10 @@
           <div class="mockexam_left">
             <div>
               <el-radio-group v-model="ZSDradio" @change='clearnZSDnode'>
-                <el-radio-button label="薄弱知识点"></el-radio-button>
-                <el-radio-button label="相关知识点"></el-radio-button>
+                <el-radio-button label="教学大纲"></el-radio-button>
+                <!-- <el-radio-button label="相关知识点"></el-radio-button> -->
               </el-radio-group>
-                <div v-if="ZSDradio =='薄弱知识点'">
+                <div v-if="ZSDradio =='教学大纲'">
                 <el-tree
                   :data="ZSDdata1"
                   show-checkbox
@@ -21,7 +21,7 @@
                   @check-change="checkChange">
                 </el-tree>
               </div>
-              <div v-if="ZSDradio =='相关知识点'">
+              <!-- <div v-if="ZSDradio =='相关知识点'">
                 <el-tree
                   :data="ZSDdata"
                   :props="defaultProps"
@@ -31,14 +31,16 @@
                   ref="tree2"
                   @check-change="checkChange">
                 </el-tree>
-              </div>
+              </div> -->
             </div>
           </div>
         <!-- </el-col>
         <el-col :span='18'> -->
           <div class="mockexam_right">
             <div class="mockexam_right_title"  v-if="checkZSDnode.length > 0" >已选择的知识点</div>
-            <div class="mockexam_right_title"  v-if="checkZSDnode.length <= 0" >请选择知识点</div>
+            <div class="mockexam_right_title"  v-if="checkZSDnode.length <= 0" >
+              <span>温馨提示：您好，请您先选择左侧的知识点，再设置右侧的试题数！</span>
+            </div>
             
             <div class="mockexam_right_ZSD">
                 <el-row :key="Math.random()" v-for="item in checkZSDnode">
@@ -71,7 +73,7 @@
                   </div>
                 </el-row>
             </div>
-            <el-button class="mockexam_right_button" v-if="checkZSDnode.length > 0" type="primary" @click='dialogLogin = true'>设定考试时间</el-button>
+            <el-button class="mockexam_right_button" v-if="checkZSDnode.length > 0" type="primary" @click='szTime'>设定考试时间</el-button>
             <!-- <div class="mockexam_right_button" @click='dialogLogin = true'>设定考试时间</div> -->
           </div>
         <!-- </el-col>
@@ -95,15 +97,19 @@
         <el-button type="primary"  @click='test'>进入考试</el-button>
       </div>
     </el-dialog>
+      <el-dialog title="请先登录" :visible.sync="loginShow" width="30%">
+          <newlogin></newlogin>
+      </el-dialog>
   </div>
 </template>
-
 <script>
+import newlogin from '@/components/layout/newlogin'
 export default {
   name: 'index',
   data () {
     return {
-      ZSDradio:"薄弱知识点",
+      loginShow: false,
+      ZSDradio:"教学大纲",
       ZSDdata:[],
       ZSDdata1:[],
       defaultProps: {
@@ -120,8 +126,13 @@ export default {
       checkZSDnode:[],
     }
   },
-
+  components:{
+    newlogin
+  },
   methods: {
+    szTime(){
+      this.dialogLogin = true
+    },
     test:function(){
       var params=[]
       this.checkZSDnode.forEach((element, index)=> {
@@ -139,10 +150,17 @@ export default {
         params.push(a)
       });
       this.$axiosStuResBody('post',this.$axiosURL.k_examinationQuestion+ 'bash/randomQuestions/simulateExam',params).then((res)=>{
-        this.STdata = res
-      }).then(()=>{
-        console.log('this.STdata',this.STdata);
-        sessionStorage.setItem('mockExam_test',JSON.stringify({time:this.testTime,STdata:this.STdata}))
+        console.log(res)
+        if(res.length == 0){
+          this.$message.error('试题为空')
+          return false
+        } else {
+          this.STdata = res
+        }
+      }).then((data)=>{
+        console.log(data)
+        if(data == false) return
+        localStorage.setItem('mockExam_test',JSON.stringify({time:this.testTime,STdata:this.STdata}))
         // this.$router.push({name:'mockExam_test',params:{time:this.testTime,STdata:this.STdata}})
         //this.$router.push({name:'mockExam_test'})
         const route = this.$router.resolve({name:'mockExam_test'})
@@ -151,7 +169,7 @@ export default {
       })
     },
     removeZSD:function(item){
-      if (this.ZSDradio=="薄弱知识点") {
+      if (this.ZSDradio=="教学大纲") {
         this.$refs.tree1.setChecked(item.node,false)
       } else {
         this.$refs.tree2.setChecked(item.node,false)
@@ -159,7 +177,7 @@ export default {
     },
     checkChange:function(){
       var treeNode = null
-      if (this.ZSDradio=="薄弱知识点") {
+      if (this.ZSDradio=="教学大纲") {
         treeNode = this.$refs.tree1.getCheckedNodes()
       } else {
         treeNode = this.$refs.tree2.getCheckedNodes()
@@ -189,6 +207,10 @@ export default {
         })
         if (c.length == 0) {
           this.$axiosStuRes1('get',this.$axiosURL.k_common+ 'count/allTypesAndNum/for/'+element.name,{}).then((res)=>{
+            if(res.error == "invalid_token") {
+              this.loginShow = true
+              return
+            }
             element.DX = res.SINGLE_CHOICE
             element.duoX = res.MULTIPLE_CHOICE
             element.TK = res.GAP_FILLING
@@ -197,8 +219,8 @@ export default {
             element.JD = res.SHORT_ANSWER
             element.ZH = res.COMPREHENSIVE
             element.allTypesAndNum = res
+            this.checkZSDnode.push(element)
           })
-          this.checkZSDnode.push(element)
         }
       })
       this.checkZSDnode.forEach((element, index)=> {
@@ -208,9 +230,7 @@ export default {
         if (c.length == 0) {
           this.checkZSDnode.splice(index,1)
         }
-      })
-      console.log(this.checkZSDnode);
-       
+      }) 
     },
     clearData:function(){
       this.clearnZSDnode()
@@ -228,7 +248,7 @@ export default {
           this.ZSDdata.push(element)
         });
       })
-      this.$axiosStuRes1('get',this.$axiosURL.k_common+ 'get/allPoints/historicalAverageScore',{}).then((res)=>{
+      this.$axiosStuRes('get',this.$axiosURL.k_common+ 'get/allPoints/historicalAverageScore',{}).then((res)=>{
         res.forEach( (element, index)=> {
           element['disabled']= true
           console.log(element);
@@ -262,5 +282,7 @@ export default {
 
 
 <style scoped>
-
+  .el-radio-button:first-child:last-child .el-radio-button__inner{
+    font-size: 16px
+  }
 </style>

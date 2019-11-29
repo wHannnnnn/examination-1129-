@@ -100,9 +100,9 @@
           this.createCode()
         }else{
           if (data.access_token) {
-            sessionStorage.setItem('access_token', data.access_token)
-            sessionStorage.setItem('loginUser', JSON.stringify(data.loginUser))
-            sessionStorage.setItem('role', data.loginUser.sysRole.code)
+            localStorage.setItem('access_token', data.access_token)
+            localStorage.setItem('loginUser', JSON.stringify(data.loginUser))
+            localStorage.setItem('role', data.loginUser.sysRole.code)
             this.$store.state.login = true;
 
             this.$store.state.role = data.loginUser.sysRole.code;
@@ -110,12 +110,12 @@
 
              var userID = data.loginUser.id
               this.$axiosRes('get',this.$axiosURL.k_neoUser+ 'find/' + userID).then((res)=>{
-                sessionStorage.setItem('aId', JSON.stringify(res.id))
+                localStorage.setItem('aId', JSON.stringify(res.id))
                 this.$store.state.aId = res.id
               })
 
             this.$axiosRes('get',this.$axiosURL.b_dictionarys,{}).then((res)=>{
-              sessionStorage.setItem('dictionarys', JSON.stringify(res))
+              localStorage.setItem('dictionarys', JSON.stringify(res))
               this.$store.state.dictionarys = res;
             }).then(()=>{
               console.log(44,this.$store.state.role );

@@ -14,27 +14,40 @@
             }
         }
     }
+    .search_con{
+        height: calc(100vh - 116px);
+        max-height: calc(100vh - 116px);
+        overflow: auto;
+    }
+    .el-pagination{
+        background: #fff;
+        padding: 5px;
+    }
     .detail{
-        margin-top:10px; 
+        margin-top:6px; 
         @extend %boxshadow;
         form{
             padding: 10px;
+            box-sizing: border-box;
         }
     }
     .learning_ZL{
         @extend %boxshadow;
     }
     .rightList{
-        margin-top: 20px;
+        margin-top: 6px;
         display: inline-block;
         vertical-align: top;
         width: 100%;
+        height: calc(100% - 94px);
+        background: #fff;
+        overflow: auto;
         li{
             text-align: center;
             display: inline-block;
             vertical-align: top;
             padding: 10px;
-            margin: 0 10px 20px 10px;
+            margin: 0 10px 10px 10px;
             background: #fff;
             width: 180px;
             box-sizing: border-box;
@@ -50,9 +63,16 @@
         h3{
             margin: 10px 0;
         }
-        .listImg,.listImg img{
-            width: 160px;
-            height: 160px;
+        .listImg{
+            width: 100%;
+            height: 140px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .listImg img {
+            width: 140px;
+            max-height: 140px;
         }
     }
 }

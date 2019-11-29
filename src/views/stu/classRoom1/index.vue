@@ -107,8 +107,6 @@ export default {
       nowZSDdataId:'',
       fileList:[],
       fileIndex:0,
-      wordImg:'./../../../assets/img/train/3.png',
-      pictureImg:'./../../../assets/img/train/3.png',
       videoImg:'./../../../assets/img/train/3.png',
     }
   },
@@ -131,13 +129,13 @@ export default {
         this.$axiosStuRes1('get',this.$axiosURL.K_knowledgePoint+this.fileList[this.fileIndex].kpointId,{}).then((res)=>{
           this.fileList[this.fileIndex]['ZSDname'] = res.name
         }).then(()=>{
-          sessionStorage.setItem('LSKJ',JSON.stringify(this.fileList[this.fileIndex]))
+          localStorage.setItem('LSKJ',JSON.stringify(this.fileList[this.fileIndex]))
           const route = this.$router.resolve({name:'classRoom'})
           window.open(route.href,'_blank',)
         })
       })
       // this.fileList[this.fileIndex].ZSDname = 
-      // sessionStorage.setItem('LSKJ',JSON.stringify(this.fileList[this.fileIndex]))
+      // localStorage.setItem('LSKJ',JSON.stringify(this.fileList[this.fileIndex]))
       // const route = this.$router.resolve({name:'classRoom'})
       // window.open(route.href,'_blank',)
     },
@@ -233,11 +231,6 @@ export default {
 }
 .classRoom_index{
   padding: 50px 150px;
-}
-.classRoom_left{
-  width: 100%;
-  height: 740px;
-  background-size: 100% 100%;
 }
 .classRoom_title{
   font-size: 24px;

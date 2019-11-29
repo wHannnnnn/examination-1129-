@@ -875,7 +875,7 @@ export default {
 
     },
     wrongQuestions:function(val){
-      var aId = sessionStorage.getItem('student_aId')
+      var aId = localStorage.getItem('student_aId')
       this.$axiosStuResBody('post',this.$axiosURL.K_neoUser+'bash/create/'+aId+'/wrongQuestions',[val.id]).then((res)=>{
       })
     },
@@ -884,7 +884,7 @@ export default {
     },
      initData:function(){
       //所有试题
-      var nowData = JSON.parse(sessionStorage.getItem('mockExam_test'))
+      var nowData = JSON.parse(localStorage.getItem('mockExam_test'))
       this.STdata = nowData.STdata
       console.log('所有试题',this.STdata);
       //试题数量
@@ -985,7 +985,7 @@ export default {
 
   },
   created:function(){
-    this.$store.state.dictionarys = JSON.parse(sessionStorage.getItem('dictionarys'))
+    this.$store.state.dictionarys = JSON.parse(localStorage.getItem('dictionarys'))
   },
   mounted:function(){
     var that = this

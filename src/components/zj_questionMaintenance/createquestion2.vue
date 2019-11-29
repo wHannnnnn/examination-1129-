@@ -432,7 +432,7 @@ export default {
   }
 }
 </script>
-<style scope>
+<style scoped>
 .el-tabs--border-card {
   background-color: transparent;
 }
